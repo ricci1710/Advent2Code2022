@@ -1,1 +1,6 @@
-export const MOCK_DEMO_DATA_DAY_03 = ``;
+export const MOCK_DEMO_DATA_DAY_03 = `vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw`;

@@ -2,10 +2,10 @@ import logo from './logo.svg';
 import './App.css';
 import Logic01 from './day01/logic01';
 import Logic02 from './day02/logic02';
+import Logic03 from "./day03/logic03";
 
 function App() {
-  // Logic01();
-  Logic02();
+  Logic03();
 
   return (
     <div className="App">
