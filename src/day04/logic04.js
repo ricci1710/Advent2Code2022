@@ -81,11 +81,11 @@ const Logic04 = () => {
 
     const checkInRange = (first, second) => {
         // check is first contain in second?
-        const isFirstInSecondContained =  (first.min >= second.min && first.min <= second.max && first.max <= second.max);
+        const isFirstInSecondContained =  (first.min >= second.min && first.max <= second.max);
         if (isFirstInSecondContained)
             return true;
 
-        return  (second.min >= first.min && second.min <= first.max && second.max <= first.max);
+        return  (second.min >= first.min && second.max <= first.max);
     };
 
     const checkIsOverlap = (first, second) => {
@@ -133,7 +133,7 @@ const Logic04 = () => {
     console.assert(demoScorePT === 4, `Algorithm is incorrect - expected: 4 calculated value: ${demoScorePT}`);
     console.log('Demo-Score (Part Two)  -> 4 ===', demoScorePT);
     const scorePT = calcPartTwo(data);
-    console.log('Score (Part Two)  -> ??? ===', scorePT);
+    console.log('Score (Part Two)  -> ???(804) ===', scorePT);
     // endregion print out part two
 };
 
