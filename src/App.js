@@ -1,11 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import Logic01 from './day01/logic01';
-import Logic02 from './day02/logic02';
-import Logic03 from "./day03/logic03";
+import Logic04 from "./day04/logic04";
 
 function App() {
-  Logic03();
+  Logic04();
 
   return (
     <div className="App">
