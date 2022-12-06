@@ -1,14 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
-import Logic04 from "./day04/logic04";
+import Logic06 from "./day06/logic06";
 
 function App() {
-  Logic04();
+  Logic06();
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={logo} className="App-logo" alt="logo"/>
         <p>
           Max calorie of Elf: ????
         </p>
