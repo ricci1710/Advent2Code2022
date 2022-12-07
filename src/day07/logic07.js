@@ -76,6 +76,23 @@ import {MOCK_DEMO_DATA_DAY_07} from "./demo07";
  * To begin, find all of the directories with a total size of at most 100000, then calculate the sum of their total sizes. In the example above, these directories are a and e; the sum of their total sizes is 95437 (94853 + 584). (As in this example, this process can count files more than once!)
  *
  * Find all of the directories with a total size of at most 100000. What is the sum of the total sizes of those directories?
+ *
+ * --- Part Two ---
+ * Now, you're ready to choose a directory to delete.
+ *
+ * The total disk space available to the filesystem is 70000000. To run the update, you need unused space of at least 30000000. You need to find a directory you can delete that will free up enough space to run the update.
+ *
+ * In the example above, the total size of the outermost directory (and thus the total amount of used space) is 48381165; this means that the size of the unused space must currently be 21618835, which isn't quite the 30000000 required by the update. Therefore, the update still requires a directory with total size of at least 8381165 to be deleted before it can run.
+ *
+ * To achieve this, you have the following options:
+ *
+ * Delete directory e, which would increase unused space by 584.
+ * Delete directory a, which would increase unused space by 94853.
+ * Delete directory d, which would increase unused space by 24933642.
+ * Delete directory /, which would increase unused space by 48381165.
+ * Directories e and a are both too small; deleting them would not free up enough space. However, directories d and / are both big enough! Between these, choose the smallest: d, increasing unused space by 24933642.
+ *
+ * Find the smallest directory that, if deleted, would free up enough space on the filesystem to run the update. What is the total size of that directory?
  */
 const Logic07 = () => {
   // region prepare mock data
@@ -148,31 +165,50 @@ const Logic07 = () => {
    */
   const calcPartOne = (treeData) => {
     const totalSizeMap = new Map();
-    calc(treeData, totalSizeMap);
-    console.log(totalSizeMap);
+    calc(treeData, totalSizeMap, '', '');
     let atMost100k = 0;
     for (const [key, value] of totalSizeMap) {
       if (value <= 100000)
         atMost100k += value;
     }
-    return {outermostDirectory: totalSizeMap.get('/'), atMost100k};
+    return {outermostDirectory: totalSizeMap.get('  /'), atMost100k};
   };
 
-  const calc = (treeData, totalSizeMap, dirKey) => {
+  const calcPartTwo = (treeData) => {
+    const maxStoreSize = 70000000;
+    const totalSizeMap = new Map();
+    calc(treeData, totalSizeMap, ':', ':');
+
+    const outermostDirectory = totalSizeMap.get(':_:_/');
+    const minSize = 30000000 - (maxStoreSize - outermostDirectory);
+
+    let result = maxStoreSize;
+    for (const [key, value] of totalSizeMap) {
+      const diff = (minSize - value);
+      if (value >= minSize)
+        result = Math.min(result, value);
+    }
+
+    return result;
+  };
+
+  const calc = (treeData, totalSizeMap, dirKey, fullPath) => {
     const keys = Object.keys(treeData);
+    const pathWithDir = fullPath + '_' + dirKey;
+
     for (let idx = 0; idx < keys.length; idx += 1) {
       const key = keys[idx];
       const item = treeData[key];
       if (typeof item === 'object') {
-        totalSizeMap.set(key, 0);
-        calc(item, totalSizeMap, key);
-        const totalSizeFromSub = totalSizeMap.get(key);
-        const totalSize = totalSizeMap.get(dirKey);
+        totalSizeMap.set(pathWithDir + '_' + key, 0);
+        calc(item, totalSizeMap, key, pathWithDir);
+        const totalSizeFromSub = totalSizeMap.get(pathWithDir + '_' + key);
+        const totalSize = totalSizeMap.get(pathWithDir);
         if (dirKey !== undefined)
-          totalSizeMap.set(dirKey, totalSize + totalSizeFromSub);
+          totalSizeMap.set(pathWithDir, totalSize + totalSizeFromSub);
       } else {
-        const totalSize = totalSizeMap.get(dirKey);
-        totalSizeMap.set(dirKey, totalSize + item);
+        const totalSize = totalSizeMap.get(pathWithDir);
+        totalSizeMap.set(pathWithDir, totalSize + item);
       }
     }
   };
@@ -186,9 +222,15 @@ const Logic07 = () => {
   console.log('Demo-Score (Part One)  -> 95437 ===', demoAtMost100k);
 
   const {atMost100k: scoreAtMost100k} = calcPartOne(lifeTreeData);
-  console.log('Score (Part One)  -> ??? (424) ===', scoreAtMost100k);
+  console.log('Score (Part One)  -> ??? (1667443) ===', scoreAtMost100k);
   // endregion print out part one
   // region print out part two
+  const smallestFolderSizeDemo = calcPartTwo(demoTreeData);
+  console.assert(smallestFolderSizeDemo === 24933642, `Algorithm is incorrect - expected: 24933642 calculated value: ${smallestFolderSizeDemo}`);
+  console.log('Demo-Score (Part Two)  -> 24933642 ===', smallestFolderSizeDemo);
+
+  const smallestFolderSizeLife = calcPartTwo(lifeTreeData);
+  console.log('Demo-Score (Part Two)  -> ???(8998590) ===', smallestFolderSizeLife);
   // endregion print out part two
 };
 
