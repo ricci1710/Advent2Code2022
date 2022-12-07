@@ -1,9 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
 import Logic06 from "./day06/logic06";
+import {useEffect} from "react";
 
+/**
+ * .."""....."""
+ * ."...."."...."
+ * ."....."....."
+ * .."........."
+ * ..."......."
+ * ....."..."
+ * ......."
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function App() {
-  Logic06();
+  useEffect(() => {
+    Logic06();
+  }, []);
+
 
   return (
     <div className="App">

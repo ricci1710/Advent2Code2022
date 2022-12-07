@@ -78,6 +78,7 @@ const Logic06 = () => {
     return endPos;
   };
   const calcPartTwo = (value) => calcPartOne(value, 14);
+
   // endregion score calculation
   // region print out part one
   const demoScore = calcPartOne(demoData);
