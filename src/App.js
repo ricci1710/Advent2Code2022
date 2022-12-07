@@ -1,7 +1,8 @@
 import logo from './logo.svg';
-import './App.css';
-import Logic06 from "./day06/logic06";
 import {useEffect} from "react";
+
+import './App.css';
+import Logic07 from "./day07/logic07";
 
 /**
  * .."""....."""
@@ -16,7 +17,7 @@ import {useEffect} from "react";
  */
 function App() {
   useEffect(() => {
-    Logic06();
+    Logic07();
   }, []);
 
 

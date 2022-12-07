@@ -81,12 +81,112 @@ const Logic07 = () => {
   // region prepare mock data
   const data = MOCK_DATA_DAY_07.split('\n');
   const demoData = MOCK_DEMO_DATA_DAY_07.split('\n');
+
+  const runCdCommand = (dirName, path) => {
+    if (dirName === '..')
+      path.pop();
+    else
+      path.push(dirName);
+  };
+
+  /**
+   * Gibt den Zeiger des aktellen Pfades zurueck.
+   * @param path
+   * @param tree
+   * @returns {*}
+   */
+  const getLevel = (path, tree) => {
+    if (Object.keys(tree).length === 0) {
+      const key = path[0];
+      tree[key] = {};
+      return tree[key];
+    }
+
+    let level = tree[path[0]]; // init root
+    for (let pathIdx = 1; pathIdx < path.length; pathIdx += 1) {
+      level = level[path[pathIdx]];
+    }
+    return level;
+  };
+
+  const buildObject = (values) => {
+    const tree = {};
+    const path = [];
+
+    let level;
+    values.forEach((item) => {
+      if (item.indexOf('$ cd') >= 0) {
+        const splitCmd = item.split(' ');
+        const dirName = splitCmd[2];
+        runCdCommand(dirName, path);
+      } else if (item.indexOf('$ ls') >= 0) {
+        level = getLevel(path, tree);
+      } else {
+        const itemParts = item.split(' ');
+        if (itemParts[0] === 'dir')
+          level[itemParts[1]] = {};
+        else
+          level[itemParts[1]] = parseInt(itemParts[0], 10);
+      }
+    });
+
+    return tree;
+  };
+
+  const demoTreeData = buildObject(demoData);
+  const lifeTreeData = buildObject(data);
+
   // endregion prepare mock data
   // region score rules
   // endregion score rules
   // region score calculation
+  /**
+   * Find all the directories with a total size of at most 100000.
+   * What is the sum of the total sizes of those directories
+   * @param treeData
+   * @returns {*}
+   */
+  const calcPartOne = (treeData) => {
+    const totalSizeMap = new Map();
+    calc(treeData, totalSizeMap);
+    console.log(totalSizeMap);
+    let atMost100k = 0;
+    for (const [key, value] of totalSizeMap) {
+      if (value <= 100000)
+        atMost100k += value;
+    }
+    return {outermostDirectory: totalSizeMap.get('/'), atMost100k};
+  };
+
+  const calc = (treeData, totalSizeMap, dirKey) => {
+    const keys = Object.keys(treeData);
+    for (let idx = 0; idx < keys.length; idx += 1) {
+      const key = keys[idx];
+      const item = treeData[key];
+      if (typeof item === 'object') {
+        totalSizeMap.set(key, 0);
+        calc(item, totalSizeMap, key);
+        const totalSizeFromSub = totalSizeMap.get(key);
+        const totalSize = totalSizeMap.get(dirKey);
+        if (dirKey !== undefined)
+          totalSizeMap.set(dirKey, totalSize + totalSizeFromSub);
+      } else {
+        const totalSize = totalSizeMap.get(dirKey);
+        totalSizeMap.set(dirKey, totalSize + item);
+      }
+    }
+  };
+
+
   // endregion score calculation
   // region print out part one
+  const {outermostDirectory: demoOutermostDirectory, atMost100k: demoAtMost100k} = calcPartOne(demoTreeData);
+  console.assert(demoOutermostDirectory === 48381165, `Algorithm is incorrect - expected: '48381165 calculated value: ${demoOutermostDirectory}`);
+  console.assert(demoAtMost100k === 95437, `Algorithm is incorrect - expected: '95437 calculated value: ${demoAtMost100k}`);
+  console.log('Demo-Score (Part One)  -> 95437 ===', demoAtMost100k);
+
+  const {atMost100k: scoreAtMost100k} = calcPartOne(lifeTreeData);
+  console.log('Score (Part One)  -> ??? (424) ===', scoreAtMost100k);
   // endregion print out part one
   // region print out part two
   // endregion print out part two
