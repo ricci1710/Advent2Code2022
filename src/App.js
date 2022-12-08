@@ -12,6 +12,8 @@ import Logic08 from "./day08/logic08";
  * ..."......."
  * ....."..."
  * ......."
+ *
+ * https://adventofcode.com/2022
  * @returns {JSX.Element}
  * @constructor
  */
