@@ -165,13 +165,14 @@ const Logic07 = () => {
    */
   const calcPartOne = (treeData) => {
     const totalSizeMap = new Map();
-    calc(treeData, totalSizeMap, '', '');
+    calc(treeData, totalSizeMap, ':', ':');
     let atMost100k = 0;
     for (const [key, value] of totalSizeMap) {
       if (value <= 100000)
         atMost100k += value;
     }
-    return {outermostDirectory: totalSizeMap.get('  /'), atMost100k};
+    const outermostDirectory = totalSizeMap.get(':_:_/');
+    return {outermostDirectory, atMost100k};
   };
 
   const calcPartTwo = (treeData) => {
@@ -230,7 +231,7 @@ const Logic07 = () => {
   console.log('Demo-Score (Part Two)  -> 24933642 ===', smallestFolderSizeDemo);
 
   const smallestFolderSizeLife = calcPartTwo(lifeTreeData);
-  console.log('Demo-Score (Part Two)  -> ???(8998590) ===', smallestFolderSizeLife);
+  console.log('Score (Part Two)  -> ???(8998590) ===', smallestFolderSizeLife);
   // endregion print out part two
 };
 
