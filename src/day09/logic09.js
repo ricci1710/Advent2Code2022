@@ -678,202 +678,196 @@ import {MOCK_DEMO_DATA_DAY_09_PT} from "./demo09PT";
  * @constructor
  */
 const Logic09 = () => {
-    // region prepare mock data
-    const data = MOCK_DATA_DAY_09.split('\n');
-    const demoData = MOCK_DEMO_DATA_DAY_09.split('\n');
-    const demoDataPT = MOCK_DEMO_DATA_DAY_09_PT.split('\n');
+  // region prepare mock data
+  const data = MOCK_DATA_DAY_09.split('\n');
+  const demoData = MOCK_DEMO_DATA_DAY_09.split('\n');
+  const demoDataPT = MOCK_DEMO_DATA_DAY_09_PT.split('\n');
 
-    let playersField;
-    const snake = new Map();
-    // endregion prepare mock data
-    // region score rules
-    // R => Right x=x+step, L => Left x=x-step, D => Down y=y+step, U => Up y=y-step
-    const moveRight = (distance) => {
-      const rigthCalc = (H, T, record) => {
-        for (let idx = 0; idx < distance; idx += 1) {
-          H.x += 1;
-          if (H.y === T.y && (H.x - T.x) === 2) {
-            T.x += 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          } else if ((H.x - T.x) == 2) {
-            T.y = H.y;
-            T.x = H.x - 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
+  let playersField;
+  const snake = new Map();
+  // endregion prepare mock data
+  // region score rules
+  // R => Right x=x+step, L => Left x=x-step, D => Down y=y+step, U => Up y=y-step
+  const moveRight = (distance) => {
+    const calculate = (prev, current, record) => {
+      if (prev === undefined) {
+        current.x += 1;
+      } else {
+        const diff = Math.abs(prev.x - current.x);
+        if (diff === 2) {
+          if (prev.y === current.y) {
+            current.x += 1;
+          } else {
+            current.y = prev.y;
+            current.x = prev.x - 1;
           }
-        }
-      }
 
-      for (let snakeIdx = 0; snakeIdx < snake.size - 1; snakeIdx += 1) {
-        rigthCalc(snake.get(snakeIdx), snake.get(snakeIdx + 1), snakeIdx + 1 === snake.size - 1);
-      }
-    };
-    const moveLeft = (distance) => {
-      const leftCalc = (H, T, record) => {
-        for (let idx = 0; idx < distance; idx += 1) {
-          H.x -= 1;
-          if (H.y === T.y && (H.x + T.x) === 2) {
-            T.x -= 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          } else if ((T.x - H.x) == 2) {
-            T.y = H.y;
-            T.x = H.x + 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          }
-        }
-      };
-
-      for (let snakeIdx = 0; snakeIdx < snake.size - 1; snakeIdx += 1) {
-        leftCalc(snake.get(snakeIdx), snake.get(snakeIdx + 1), snakeIdx + 1 === snake.size - 1);
-      }
-    };
-    const moveUp = (distance) => {
-      const upCalc = (H, T, record) => {
-        for (let idy = 0; idy < distance; idy += 1) {
-          H.y -= 1;
-          if (H.x === T.x && (T.y - H.y) === 2) {
-            T.y -= 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          } else if ((T.y - H.y) == 2) {
-            T.x = H.x;
-            T.y = H.y + 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          }
-        }
-      }
-
-      for (let snakeIdx = 0; snakeIdx < snake.size - 1; snakeIdx += 1) {
-        upCalc(snake.get(snakeIdx), snake.get(snakeIdx + 1), snakeIdx + 1 === snake.size - 1);
-      }
-    };
-    const moveDown = (distance) => {
-      const downCalc = (H, T, record) => {
-        for (let idy = 0; idy < distance; idy += 1) {
-          H.y += 1;
-          if (H.x === T.x && (H.y - T.y) === 2) {
-            T.y += 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          } else if ((H.y - T.y) == 2) {
-            T.x = H.x;
-            T.y = H.y - 1;
-            if (record)
-              playersField[T.y][T.x] = '#';
-          }
-        }
-      }
-      for (let snakeIdx = 0; snakeIdx < snake.size - 1; snakeIdx += 1) {
-        downCalc(snake.get(snakeIdx), snake.get(snakeIdx + 1), snakeIdx + 1 === snake.size - 1);
-      }
-    };
-    // endregion score rules
-    // region score calculation
-    const initState = (values, snakeSize, playerFieldSize) => {
-      // region == Initial State ==
-      // const maxLength = values.reduce((accumulator, currentValue) => {
-      //   const distance = parseInt(currentValue.split(' ')[1], 10);
-      //   return Math.max(accumulator, distance);
-      // }, 0);
-      const maxLength = playerFieldSize;
-      playersField = new Array(maxLength + 1).fill('.').map(() => new Array(maxLength + 1).fill('.'));
-      playersField[maxLength][maxLength] = '#';
-
-      for (let idx = 0; idx < snakeSize; idx += 1)
-        snake.set(idx, {x: maxLength * 0.5, y: maxLength * 0.5});
-      // endregion == Initial State ==
-    };
-
-    const calc = () => {
-      let result = 0;
-      for (let idy = 0; idy < playersField.length; idy += 1) {
-        for (let idx = 0; idx < playersField.length; idx += 1) {
-          const char = playersField[idy][idx];
-          if (char === '#')
-            result += 1;
-        }
-      }
-      return result;
-    };
-
-    const moveRight2 = (distance) => {
-      const calculate = (prev, current, record) => {
-        if (prev === undefined) // dann gibt es keine Regel
-          current.x += 1;
-        else if (prev.y === current.y && (prev.x - current.x) === 2) {
-          current.x += 1;
-          if (record)
-            playersField[current.y][current.x] = '#';
-        } else if ((prev.x - current.x) == 2) {
-          current.y = prev.y;
-          current.x = prev.x - 1;
           if (record)
             playersField[current.y][current.x] = '#';
         }
-        return current;
-      };
+      }
+      return current;
+    };
 
-      for (let idx = 0; idx < distance; idx += 1) {
-        for (let snakeIdx = 0; snakeIdx < snake.size; snakeIdx += 1) {
-          const current = calculate(snake.get(snakeIdx - 1), snake.get(snakeIdx), snakeIdx === snake.size - 1);
-          snake.set(snakeIdx, current);
+    stepThrough(distance, calculate);
+  };
+  const moveLeft = (distance) => {
+    const calculate = (prev, current, record) => {
+      if (prev === undefined) {
+        current.x -= 1;
+      } else {
+        const diff = Math.abs(prev.x - current.x);
+        if (diff === 2) {
+          if (prev.y === current.y) {
+            current.x -= 1;
+          } else {
+            current.y = prev.y;
+            current.x = prev.x + 1;
+          }
+
+          if (record)
+            playersField[current.y][current.x] = '#';
         }
       }
+      return current;
     };
 
-    const calcPartOne = (values, snakeSize, playerFieldSize) => {
-      initState(values, snakeSize, playerFieldSize);
-      values.forEach((moveCmd) => {
-        const moveCmdParts = moveCmd.split(' ');
-        const direction = moveCmdParts[0];
-        const distance = parseInt(moveCmdParts[1], 10);
-        switch (direction) {
-          case 'R':
-            moveRight2(distance);
-            break;
-          case 'L':
-            moveLeft(distance);
-            break;
-          case 'U':
-            moveUp(distance);
-            break;
-          case 'D':
-            moveDown(distance);
-            break;
-          default:
-            throw new Error('Command not found.');
+    stepThrough(distance, calculate);
+  };
+  const moveUp = (distance) => {
+    const calculate = (prev, current, record) => {
+      if (prev === undefined) {
+        current.y -= 1;
+      } else {
+        const diff = Math.abs(prev.y - current.y);
+        if (diff === 2) {
+          if (prev.x === current.x) {
+            current.y -= 1;
+          } else {
+            current.x = prev.x;
+            current.y = prev.y + 1;
+          }
+
+          if (record)
+            playersField[current.y][current.x] = '#';
         }
-      });
-
-      return calc();
+      }
+      return current;
     };
 
-    const calcPartTwo = (values, snakeSize, playerFieldSize) => {
-      return calcPartOne(values, snakeSize, playerFieldSize);
+    stepThrough(distance, calculate);
+  };
+  const moveDown = (distance) => {
+    const calculate = (prev, current, record) => {
+      if (prev === undefined) {
+        current.y += 1;
+      } else {
+        const diff = Math.abs(prev.y - current.y);
+        if (diff === 2) {
+          if (prev.x === current.x) {
+            current.y += 1;
+          } else {
+            current.x = prev.x;
+            current.y = prev.y - 1;
+          }
+
+          if (record)
+            playersField[current.y][current.x] = '#';
+        }
+      }
+      return current;
     };
+
+    stepThrough(distance, calculate);
+  };
+  // endregion score rules
+  // region score calculation
+  const initState = (values, snakeSize, playerFieldSize) => {
+    // region == Initial State ==
+    // const maxLength = values.reduce((accumulator, currentValue) => {
+    //   const distance = parseInt(currentValue.split(' ')[1], 10);
+    //   return Math.max(accumulator, distance);
+    // }, 0);
+    const maxLength = playerFieldSize;
+    playersField = new Array(maxLength + 1).fill('.').map(() => new Array(maxLength + 1).fill('.'));
+    playersField[maxLength][maxLength] = '#';
+
+    for (let idx = 0; idx < snakeSize; idx += 1)
+      snake.set(idx, {x: maxLength * 0.5, y: maxLength * 0.5});
+    // endregion == Initial State ==
+  };
+
+  const calc = () => {
+    let result = 0;
+    for (let idy = 0; idy < playersField.length; idy += 1) {
+      for (let idx = 0; idx < playersField.length; idx += 1) {
+        const char = playersField[idy][idx];
+        if (char === '#')
+          result += 1;
+      }
+    }
+    return result;
+  };
+
+
+  const stepThrough = (distance, calculateCB) => {
+    for (let idx = 0; idx < distance; idx += 1) {
+      for (let snakeIdx = 0; snakeIdx < snake.size; snakeIdx += 1) {
+        const current = calculateCB(snake.get(snakeIdx - 1), snake.get(snakeIdx), snakeIdx === snake.size - 1);
+        snake.set(snakeIdx, current);
+      }
+    }
+  };
+
+  const calcPartOne = (values, snakeSize, playerFieldSize) => {
+    initState(values, snakeSize, playerFieldSize);
+    values.forEach((moveCmd) => {
+      const moveCmdParts = moveCmd.split(' ');
+      const direction = moveCmdParts[0];
+      const distance = parseInt(moveCmdParts[1], 10);
+      switch (direction) {
+        case 'R':
+          moveRight(distance);
+          break;
+        case 'L':
+          moveLeft(distance);
+          break;
+        case 'U':
+          moveUp(distance);
+          break;
+        case 'D':
+          moveDown(distance);
+          break;
+        default:
+          throw new Error('Command not found.');
+      }
+    });
+
+    return calc();
+  };
+
+  const calcPartTwo = (values, snakeSize, playerFieldSize) => {
+    return calcPartOne(values, snakeSize, playerFieldSize);
+  };
 // endregion score calculation
 // region print out part one
-//     const demoScore = calcPartOne(demoData, 2, 10);
-//     console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
-//     console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
+  const demoScore = calcPartOne(demoData, 2, 10);
+  console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
+  console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
+  console.log('Demo-Score (Part One)  -> 13 ===', playersField);
 //
-// const lifeScore = calcPartOne(data, 2);
-// console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
+  const lifeScore = calcPartOne(data, 2, 1000);
+  console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
 // endregion print out part one
 // region print out part two
-    const demoScorePT = calcPartTwo(demoDataPT, 10, 30);
-    console.assert(demoScorePT === 36, `Algorithm is incorrect - expected: 36 calculated value: ${demoScorePT}`);
+//     const demoScorePT = calcPartTwo(demoDataPT, 10, 30);
+//     console.assert(demoScorePT === 36, `Algorithm is incorrect - expected: 36 calculated value: ${demoScorePT}`);
 // console.log('Demo-Score (Part Two)  -> 36 ===', demoScorePT);
 //
 //     const lifeScorePT = calcPartTwo(data, 10, 30);
 //     console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
-    console.log('-----------------------------------------------------------------------');
+  console.log('-----------------------------------------------------------------------');
 // endregion print out part two
-  }
-;
+};
 
 export default Logic09;
