@@ -701,11 +701,10 @@ const Logic09 = () => {
             current.y = prev.y;
             current.x = prev.x - 1;
           }
-
-          if (record)
-            playersField[current.y][current.x] = '#';
         }
       }
+      if (record)
+        playersField[current.y][current.x] = '#';
       return current;
     };
 
@@ -724,11 +723,10 @@ const Logic09 = () => {
             current.y = prev.y;
             current.x = prev.x + 1;
           }
-
-          if (record)
-            playersField[current.y][current.x] = '#';
         }
       }
+      if (record)
+        playersField[current.y][current.x] = '#';
       return current;
     };
 
@@ -747,11 +745,10 @@ const Logic09 = () => {
             current.x = prev.x;
             current.y = prev.y + 1;
           }
-
-          if (record)
-            playersField[current.y][current.x] = '#';
         }
       }
+      if (record)
+        playersField[current.y][current.x] = '#';
       return current;
     };
 
@@ -770,11 +767,10 @@ const Logic09 = () => {
             current.x = prev.x;
             current.y = prev.y - 1;
           }
-
-          if (record)
-            playersField[current.y][current.x] = '#';
         }
       }
+      if (record)
+        playersField[current.y][current.x] = '#';
       return current;
     };
 
@@ -784,16 +780,10 @@ const Logic09 = () => {
   // region score calculation
   const initState = (values, snakeSize, playerFieldSize) => {
     // region == Initial State ==
-    // const maxLength = values.reduce((accumulator, currentValue) => {
-    //   const distance = parseInt(currentValue.split(' ')[1], 10);
-    //   return Math.max(accumulator, distance);
-    // }, 0);
-    const maxLength = playerFieldSize;
-    playersField = new Array(maxLength + 1).fill('.').map(() => new Array(maxLength + 1).fill('.'));
-    playersField[maxLength][maxLength] = '#';
+    playersField = new Array(playerFieldSize + 1).fill('.').map(() => new Array(playerFieldSize + 1).fill('.'));
 
     for (let idx = 0; idx < snakeSize; idx += 1)
-      snake.set(idx, {x: maxLength * 0.5, y: maxLength * 0.5});
+      snake.set(idx, {x: playerFieldSize * 0.5, y: playerFieldSize * 0.5});
     // endregion == Initial State ==
   };
 
@@ -808,7 +798,6 @@ const Logic09 = () => {
     }
     return result;
   };
-
 
   const stepThrough = (distance, calculateCB) => {
     for (let idx = 0; idx < distance; idx += 1) {
@@ -854,15 +843,15 @@ const Logic09 = () => {
   const demoScore = calcPartOne(demoData, 2, 10);
   console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
   console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
-  console.log('Demo-Score (Part One)  -> 13 ===', playersField);
-//
+  console.log(playersField);
   const lifeScore = calcPartOne(data, 2, 1000);
   console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
 // endregion print out part one
 // region print out part two
-//     const demoScorePT = calcPartTwo(demoDataPT, 10, 30);
-//     console.assert(demoScorePT === 36, `Algorithm is incorrect - expected: 36 calculated value: ${demoScorePT}`);
-// console.log('Demo-Score (Part Two)  -> 36 ===', demoScorePT);
+  const demoScorePT = calcPartTwo(demoDataPT, 10, 30);
+  console.assert(demoScorePT === 36, `Algorithm is incorrect - expected: 36 calculated value: ${demoScorePT}`);
+  console.log('Demo-Score (Part Two)  -> 36 ===', demoScorePT);
+  console.log(playersField);
 //
 //     const lifeScorePT = calcPartTwo(data, 10, 30);
 //     console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
