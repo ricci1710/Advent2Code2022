@@ -736,15 +736,19 @@ const Logic09 = () => {
     const calculate = (prev, current, record) => {
       if (prev === undefined) {
         current.y -= 1;
+      }
+      if (prev.x === current.x) {
+        current.y -= 1;
       } else {
-        const diff = Math.abs(prev.y - current.y);
-        if (diff === 2) {
-          if (prev.x === current.x) {
-            current.y -= 1;
-          } else {
-            current.x = prev.x;
-            current.y = prev.y + 1;
-          }
+        const diffY = Math.abs(prev.y - current.y);
+        const diffX = Math.abs(prev.x - current.x);
+        if (diffX === 2 || diffY === 2) {
+          // if (prev.x === current.x) {
+          //   current.y -= 1;
+          // } else {
+          current.x = current.x + 1;
+          current.y = current.y - 1;
+          // }
         }
       }
       if (record)
@@ -802,9 +806,13 @@ const Logic09 = () => {
   const stepThrough = (distance, calculateCB) => {
     for (let idx = 0; idx < distance; idx += 1) {
       for (let snakeIdx = 0; snakeIdx < snake.size; snakeIdx += 1) {
+        const coord = snake.get(snakeIdx);
+        playersField[coord.y][coord.x] = '.';
         const current = calculateCB(snake.get(snakeIdx - 1), snake.get(snakeIdx), snakeIdx === snake.size - 1);
+        playersField[current.y][current.x] = snakeIdx === 0 ? 'H' : snakeIdx;
         snake.set(snakeIdx, current);
       }
+      console.log(playersField);
     }
   };
 
@@ -814,6 +822,7 @@ const Logic09 = () => {
       const moveCmdParts = moveCmd.split(' ');
       const direction = moveCmdParts[0];
       const distance = parseInt(moveCmdParts[1], 10);
+      console.log(moveCmd);
       switch (direction) {
         case 'R':
           moveRight(distance);
@@ -840,17 +849,17 @@ const Logic09 = () => {
   };
 // endregion score calculation
 // region print out part one
-  const demoScore = calcPartOne(demoData, 2, 10);
-  console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
-  console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
-  console.log(playersField);
-  const lifeScore = calcPartOne(data, 2, 1000);
-  console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
+//   const demoScore = calcPartOne(demoData, 2, 10);
+//   console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
+//   console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
+//   console.log(playersField);
+//   const lifeScore = calcPartOne(data, 2, 1000);
+//   console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
 // endregion print out part one
 // region print out part two
-  const demoScorePT = calcPartTwo(demoDataPT, 10, 30);
-  console.assert(demoScorePT === 36, `Algorithm is incorrect - expected: 36 calculated value: ${demoScorePT}`);
-  console.log('Demo-Score (Part Two)  -> 36 ===', demoScorePT);
+  const demoScorePT = calcPartTwo(demoData, 10, 10);
+  console.assert(demoScorePT === 1, `Algorithm is incorrect - expected: 1 calculated value: ${demoScorePT}`);
+  console.log('Demo-Score (Part Two)  -> 1 ===', demoScorePT);
   console.log(playersField);
 //
 //     const lifeScorePT = calcPartTwo(data, 10, 30);
