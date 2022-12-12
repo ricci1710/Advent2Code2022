@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import {useEffect} from "react";
 
 import './App.css';
-import Logic09 from "./day09/logic09";
+import Logic10 from "./day10/logic10";
 
 /**
  * .."""....."""
@@ -19,7 +19,7 @@ import Logic09 from "./day09/logic09";
  */
 function App() {
   useEffect(() => {
-    Logic09();
+    Logic10();
   }, []);
 
 
