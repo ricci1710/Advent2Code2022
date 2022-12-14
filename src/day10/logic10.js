@@ -211,46 +211,104 @@ const Logic10 = () => {
   // region score calculation
   const calcPartOne = (values) => {
     let cycle = 0;
+    let cycles = 0
     let register = 1;
 
     let mapKey = 20;
     const cycleResults = new Map();
+    cycleResults.set(20, {value: 0, register: 1, cycles});
 
-    values.forEach((item) => {
-      cycle += item === 'noop' ? 1 : 2;
+    let arrayCounter = 0;
+    for (const command of values) {
+      cycle += command === 'noop' ? 1 : 2;
+      cycles += command === 'noop' ? 1 : 2;
+
       if (cycle <= 20) {
-        if (item !== 'noop') {
-          const cmd = item.split(' ');
+        const mapItem = cycleResults.get(mapKey);
+        mapItem.cycles = cycles;
+        cycleResults.set(mapKey, mapItem);
+
+        arrayCounter++;
+        if (command !== 'noop') {
+          const cmd = command.split(' ');
           register += parseInt(cmd[1], 10);
-          cycleResults.set(mapKey, 20 * register);
+          cycleResults.set(mapKey, {value: mapKey * register, register, cycles});
         }
-        // } else if (cycle <= 60) {
-        //   const cycleCount = (cycle - 20) % 40;
-        //   console.log('item:', item, cycleCount, cycle);
-        //   if (item !== 'noop') {
-        //     const cmd = item.split(' ');
-        //     register += parseInt(cmd[1], 10);
-        //     cycleResults.set(60, 60 * register);
-        //   }
-        // } else if (cycle <= 100) {
-        //   const cycleCount = (cycle - 20) % 40;
-        //   console.log('item:', item, cycleCount, cycle);
-        //   if (item !== 'noop') {
-        //     const cmd = item.split(' ');
-        //     register += parseInt(cmd[1], 10);
-        //     cycleResults.set(100, 100 * register);
-        //   }
-      } else {
-        const cycleCount = (cycle - 20) % 40;
-        if (cycleCount === 1)
-          mapKey += 40;
-        if (item !== 'noop') {
-          const cmd = item.split(' ');
+      } else if (cycle > 20) {
+        cycle -= 20;
+        mapKey += 40;
+        arrayCounter++;
+        if (command !== 'noop') {
+          const cmd = command.split(' ');
           register += parseInt(cmd[1], 10);
-          cycleResults.set(mapKey, mapKey * register);
+          cycleResults.set(mapKey, {value: mapKey * register, register, cycles});
+        }
+        break;
+      }
+    }
+
+    for (let idx = arrayCounter; idx < values.length; idx += 1) {
+      const command = values[idx];
+      cycle += command === 'noop' ? 1 : 2;
+      cycles += command === 'noop' ? 1 : 2;
+
+      if (cycle <= 40) {
+        const mapItem = cycleResults.get(mapKey);
+        if (mapItem) {
+          mapItem.cycles = cycles;
+          cycleResults.set(mapKey, mapItem);
+        }
+        if (command !== 'noop') {
+          const cmd = command.split(' ');
+          register += parseInt(cmd[1], 10);
+          cycleResults.set(mapKey, {value: mapKey * register, register, cycles});
+        }
+      } else if (cycle > 40) {
+        console.log('Excel-Index:', idx + 1, 'Start einer neuen Map');
+        cycle -= 40;
+        mapKey += 40;
+
+        if (command !== 'noop') {
+          const cmd = command.split(' ');
+          register += parseInt(cmd[1], 10);
+          cycleResults.set(mapKey, {value: mapKey * register, register, cycles, exelStart: 'Excel-Index:' + (idx + 1)});
         }
       }
-    });
+    }
+
+    // let counter = 0;
+    // values.forEach((item) => {
+    //   cycle += item === 'noop' ? 1 : 2;
+    //   if (cycle <= 20) {
+    //     if (item !== 'noop') {
+    //       const cmd = item.split(' ');
+    //       register += parseInt(cmd[1], 10);
+    //       cycleResults.set(mapKey, 20 * register);
+    //     }
+    //   } else {
+    //     let cycleCount = cycle - 20 - counter * 40;
+    //     if (cycleCount === 1)
+    //       mapKey += 40;
+    //     if (cycleCount <= 40) {
+    //       if (item !== 'noop') {
+    //         const cmd = item.split(' ');
+    //         register += parseInt(cmd[1], 10);
+    //         cycleResults.set(mapKey, mapKey * register);
+    //       }
+    //     } else {
+    //       counter += 1;
+    //       console.log(item, cycleCount);
+    //     }
+    // const cycleCount = (cycle - 20) % 40;
+    // if (cycleCount === 1)
+    //   mapKey += 40;
+    // if (item !== 'noop') {
+    //   const cmd = item.split(' ');
+    //   register += parseInt(cmd[1], 10);
+    //   cycleResults.set(mapKey, mapKey * register);
+    // }
+    // }
+    // });
 
     return cycleResults;
   };
@@ -266,8 +324,14 @@ const Logic10 = () => {
     console.log(`Demo-Score (Part One)  -> key(${key}): ${demoDataExpected.get(key)}  ===`, demoScore.get(key));
   });
 
-  // const lifeScore = calcPartOne();
-  // console.log('Life-Score (Part One)  -> (???) 1700 ===', lifeScore);
+  const lifeScore = calcPartOne(data);
+  let result = lifeScore.get(20).value;
+  result += lifeScore.get(60).value;
+  result += lifeScore.get(100).value;
+  result += lifeScore.get(140).value;
+  result += lifeScore.get(180).value;
+  result += lifeScore.get(220).value;
+  console.log('Life-Score (Part One)  -> (???) ===', result);
   // endregion print out part one
   // region print out part two
   // const demoScorePT = calcPartTwo();

@@ -792,8 +792,8 @@ const Logic09 = () => {
 
       stepThrough(distance, calculate);
     };
-// endregion score rules
-// region score calculation
+    // endregion score rules
+    // region score calculation
     const initState = (values, snakeSize, playerFieldSize) => {
       // region == Initial State ==
       playersField = new Array(playerFieldSize + 1).fill('.').map(() => new Array(playerFieldSize + 1).fill('.'));
@@ -861,24 +861,28 @@ const Logic09 = () => {
     const calcPartTwo = (values, snakeSize, playerFieldSize) => {
       return calcPartOne(values, snakeSize, playerFieldSize);
     };
-// endregion score calculation
-// region print out part one
-    const demoScore = calcPartOne(demoData, 2, 10);
-    console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
-    console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
-    const lifeScore = calcPartOne(data, 2, 1000);
-    console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
-// endregion print out part one
-// region print out part two
-//   const demoScorePT = calcPartTwo(demoData, 10, 10);
-//   console.assert(demoScorePT === 1, `Algorithm is incorrect - expected: 1 calculated value: ${demoScorePT}`);
-//   console.log('Demo-Score (Part Two)  -> 1 ===', demoScorePT);
-//   console.log(playersField);
+    // endregion score calculation
+    // region print out part one
+//     const demoScore = calcPartOne(demoData, 2, 10);
+//     console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
+//     console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
+//     const lifeScore = calcPartOne(data, 2, 1000);
+//     console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
+    // endregion print out part one
+    // region print out part two
+    // const demoScorePT = calcPartTwo(demoData, 10, 10);
+    // console.assert(demoScorePT === 1, `Algorithm is incorrect - expected: 1 calculated value: ${demoScorePT}`);
+    // console.log('Demo-Score (Part Two)  -> 1 ===', demoScorePT);
+    const demo09ScorePT = calcPartTwo(demoDataPT, 10, 22);
+    console.assert(demo09ScorePT === 36, `Algorithm is incorrect - expected: 1 calculated value: ${demo09ScorePT}`);
+    console.log('Demo-Score (Part Two)  -> 36 ===', demo09ScorePT);
+
 //
-//     const lifeScorePT = calcPartTwo(data, 10, 30);
-//     console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
-    console.log('-----------------------------------------------------------------------');
-// endregion print out part two
+//     const lifeScorePT = calcPartTwo(data, 10, 1000);
+//     console.log('Life-Score (Part Two)  -> (???) 2443 to low ===', lifeScorePT);
+    console.log(playersField);
+//     console.log('-----------------------------------------------------------------------');
+    // endregion print out part two
   }
 ;
 

@@ -106,7 +106,7 @@ const Logic12 = () => {
     const higherChar = char.charCodeAt(0);
     const lowerChar = (playerField[y - 1][x]).charCodeAt(0);
 
-    if (higherChar === lowerChar || higherChar - 1 === lowerChar) {
+    if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x, y: y - 1, counter: counter + 1, char: String.fromCharCode(lowerChar)};
       wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
@@ -120,7 +120,7 @@ const Logic12 = () => {
     const higherChar = char.charCodeAt(0);
     const lowerChar = (playerField[y + 1][x]).charCodeAt(0);
 
-    if (higherChar === lowerChar || higherChar - 1 === lowerChar) {
+    if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x, y: y + 1, counter: counter + 1, char: String.fromCharCode(lowerChar)};
       wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
@@ -135,7 +135,8 @@ const Logic12 = () => {
     const higherChar = char.charCodeAt(0);
     const lowerChar = (playerField[y][x + 1]).charCodeAt(0);
 
-    if (higherChar === lowerChar || higherChar - 1 === lowerChar) {
+    // if (lowerChar-higherChar < -1) {
+    if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x: x + 1, y, counter: counter + 1, char: String.fromCharCode(lowerChar)};
       wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
@@ -150,7 +151,7 @@ const Logic12 = () => {
     const higherChar = char.charCodeAt(0);
     const lowerChar = (playerField[y][x - 1]).charCodeAt(0);
 
-    if (higherChar === lowerChar || higherChar - 1 === lowerChar) {
+    if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x: x - 1, y, counter: counter + 1, char: String.fromCharCode(lowerChar)};
       wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
