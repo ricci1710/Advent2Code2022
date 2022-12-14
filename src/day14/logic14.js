@@ -191,7 +191,7 @@ const Logic14 = () => {
   };
 
   const calculatePlayFieldSize = (values) => {
-    let maxX = 10000;
+    let maxX = 1000;
     let maxY = 0;
 
     let minX = Number.MAX_VALUE;
@@ -208,7 +208,7 @@ const Logic14 = () => {
       });
     });
 
-    const playerField = new Array(maxY + 1).fill('.').map(() => new Array(maxX - minX + 3).fill('.'));
+    const playerField = new Array(maxY + 1).fill('.').map(() => new Array(maxX).fill('.'));
     return {playerField, minXCoordinate: minX};
   };
 
@@ -221,6 +221,36 @@ const Logic14 = () => {
       for (let idx = 0; idx < parsedLine.length - 1; idx += 1) {
         const point = getCalcPoint(parsedLine[idx], minXCoordinate);
         const nextPoint = getCalcPoint(parsedLine[idx + 1], minXCoordinate);
+        if (point.x === nextPoint.x) {
+          const steps = point.y - nextPoint.y;
+          if (steps > 0) {
+            for (let step = 0; step < steps + 1; step += 1)
+              playerField[point.y - step][point.x] = '#';
+          } else {
+            for (let step = 0; step < Math.abs(steps) + 1; step += 1)
+              playerField[point.y + step][point.x] = '#';
+          }
+        } else {
+          const steps = point.x - nextPoint.x;
+          if (steps > 0) {
+            for (let step = 0; step < steps + 1; step += 1)
+              playerField[point.y][point.x - step] = '#';
+          } else {
+            for (let step = 0; step < Math.abs(steps) + 1; step += 1)
+              playerField[point.y][point.x + step] = '#';
+          }
+        }
+      }
+    });
+  };
+  const buildPlayerFieldPartTwo = ({playerField, minXCoordinate}, values) => {
+    const {x, y, char} = startPoint;
+    playerField[y][x] = char;
+    values.forEach((line) => {
+      const parsedLine = line.split(' -> ');
+      for (let idx = 0; idx < parsedLine.length - 1; idx += 1) {
+        const point = getPoint(parsedLine[idx], minXCoordinate);
+        const nextPoint = getPoint(parsedLine[idx + 1], minXCoordinate);
         if (point.x === nextPoint.x) {
           const steps = point.y - nextPoint.y;
           if (steps > 0) {
@@ -290,13 +320,13 @@ const Logic14 = () => {
     return count;
   };
   const calcPlayerFieldPartTwo = (playerFieldData) => {
-    const {playerField, minXCoordinate} = playerFieldData;
+    const {playerField} = playerFieldData;
     const maxYLength = playerField.length;
 
     let count = 0;
     let finish = false;
     while (finish === false) {
-      const startPoint = {x: getCalcXCoordinate(500, minXCoordinate), y: 0};
+      const startPoint = {x: 500, y: -1};
       const xPos = startPoint.x;
       const yPos = startPoint.y;
       const currentPos = {x: xPos, y: yPos};
@@ -312,13 +342,8 @@ const Logic14 = () => {
         if (fieldValue === 'o' || fieldValue === '#') {
           // linke diagonal prüfen
           if (currentPos.x - 1 < 0) {
-            for (let lineIdx = 0; lineIdx < playerField.length; lineIdx += 1) {
-              const line = playerField[lineIdx];
-              if (lineIdx < playerField.length - 1)
-                line.unshift('.');
-              else
-                line.unshift('#');
-            }
+            finish = true;
+            break;
           }
           const leftValue = playerField[currentPos.y + 1][currentPos.x - 1];
           if (leftValue === 'o' || leftValue === '#') {
@@ -326,6 +351,10 @@ const Logic14 = () => {
             const rightValue = playerField[currentPos.y + 1][currentPos.x + 1];
             if (rightValue === 'o' || rightValue === '#') {
               playerField[currentPos.y][currentPos.x] = 'o';
+              if (currentPos.x === 500 && currentPos.y === 1)
+                console.log(currentPos);
+              if (currentPos.x === 500 && currentPos.y === 0)
+                finish = true;
               break;
             } else {
               currentPos.x += 1;
@@ -350,13 +379,13 @@ const Logic14 = () => {
 
   const calcPartTwo = (values) => {
     const playerFieldData = calculatePlayFieldSize(values);
-    buildPlayerField(playerFieldData, values);
+    buildPlayerFieldPartTwo(playerFieldData, values);
 
-    const {playerField, minXCoordinate} = playerFieldData;
+    const {playerField} = playerFieldData;
     playerField.push(new Array(playerField[0].length).fill('.'))
     playerField.push(new Array(playerField[0].length).fill('#'))
 
-    return calcPlayerFieldPartOne(playerFieldData) - 1;
+    return calcPlayerFieldPartTwo(playerFieldData);
   };
   // endregion score calculation
   // region print out part one
@@ -371,9 +400,9 @@ const Logic14 = () => {
   const demoScorePT = calcPartTwo(demoData);
   console.assert(demoScorePT === 93, `Algorithm is incorrect - expected: 93 calculated value: ${demoScorePT}`);
   console.log('Demo-Score (Part Two)  -> 93 ===', demoScorePT);
-  //
-  // const lifeScorePT = calcPartTwo();
-  // console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
+
+  const lifeScorePT = calcPartTwo(data);
+  console.log('Life-Score (Part Two)  -> (???) 26686 ===', lifeScorePT);
   // endregion print out part two
 };
 
