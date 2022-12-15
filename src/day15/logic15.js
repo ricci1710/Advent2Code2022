@@ -144,124 +144,48 @@ const Logic15 = () => {
 
   // endregion prepare mock data
   // region score rules
-  const parseData = (values) => {
-    const playerField = new Map();
-    const sbMinDistance = new Map();
-
-    values.forEach((line) => {
-      const lineParts = line.split(':');
-      const sensor = lineParts[0].split(' ');
-      const beacon = lineParts[1].split(' ');
-
-      console.assert(beacon.length === 7, `Algorithm is incorrect - beacon.length expected: 7 calculated value: ${beacon.length}`)
-      let xPos = beacon[5].split('=');
-      let yPos = beacon[6].split('=');
-      let key = `${xPos[1]}${yPos[1]}`;
-      playerField.set(key, 'B');
-
-      const beaconPosX = parseInt(xPos[1], 10);
-      const beaconPosY = parseInt(yPos[1], 10);
-
-      console.assert(sensor.length === 4, `Algorithm is incorrect - sensor.length expected: 4 calculated value: ${sensor.length}`)
-      xPos = sensor[2].split('=');
-      yPos = sensor[3].split('=');
-      key = `${xPos[1]}${yPos[1]}`;
-      playerField.set(key, 'S');
-      const sensorPosX = parseInt(xPos[1], 10);
-      const sensorPosY = parseInt(yPos[1], 10);
-
-      const dist = Math.abs(sensorPosX - beaconPosX) + Math.abs(sensorPosY - beaconPosY);
-      sbMinDistance.set(key, dist);
-    });
-
-    return {playerField, sbMinDistance};
-  };
-
-  const forbiddenCellCounter = (sensorPosY, sensorDistance, lineNumber) => {
-    return sensorDistance - Math.abs(sensorPosY - lineNumber);
-  };
-  const filterMap = (playerField, conditionCB) => {
-    const result = new Map();
-    for (let [key, value] of playerField) {
-      if (conditionCB(key, value)) {
-        result.set(key, value);
-      }
-    }
-    return result;
-  };
   // endregion score rules
   // region score calculation
-  const calcPartOne = (values, lineNumber) => {
-    const resultMap = new Map();
-    const {playerField, sbMinDistance} = parseData(values);
-    const sensorMapForLineNumber = filterMap(playerField, (key, value) => {
-      if (value === 'B')
-        return false;
-
-      const sensorDistance = sbMinDistance.get(key);
-      const sensorPosX = parseInt(key.split(',')[0]);
-      const sensorPosY = parseInt(key.split(',')[1]);
-      const diffPos = sensorPosY - lineNumber;
-
-      // Liegt der Sensor über oder unter der gewünschten Zeile?
-      let lineContained = false;
-      if (diffPos === 0) {
-        // Punkt liegt auf der Zeile
-        lineContained = true;
-      } else if (diffPos > 0) {
-        // Punkt liegt unterhalb
-        lineContained = sensorPosY - sensorDistance <= lineNumber;
-      } else {
-        // Punkt liegt oberhalb
-        lineContained = sensorPosY + sensorDistance >= lineNumber;
-      }
-
-      if (lineContained) {
-        const stampKey = `${sensorPosX},${lineNumber}`;
-        const counter = forbiddenCellCounter(sensorPosY, sensorDistance, lineNumber);
-        for (let idx = 0; idx <= counter; idx += 1) {
-          const charRight = playerField.get(`${sensorPosX + idx},${lineNumber}`);
-          if (charRight !== 'B' && charRight !== 'S')
-            resultMap.set(`${sensorPosX + idx},${lineNumber}`, '#');
-          const charLeft = playerField.get(`${sensorPosX - idx},${lineNumber}`);
-          if (charLeft !== 'B' && charLeft !== 'S')
-            resultMap.set(`${sensorPosX - idx},${lineNumber}`, '#');
-        }
-        const playFieldValue = playerField.get(stampKey);
-        if (playFieldValue !== 'B' && playFieldValue !== 'S')
-          resultMap.set(`${sensorPosX},${lineNumber}`, '#');
-      }
-
-      return lineContained;
-    });
-
-    const sortResult = new Map([...resultMap.entries()].sort((a, b) => {
-      return parseInt(a[0], 10) < parseInt(b[0], 10) ? -1 : 1;
-    }));
-    return resultMap.size;
-  };
-
-  const calcPartTwo = () => {
-
+  // von 0 - 4000000 Array
+  const calcPartTwo = (values, lineNumbers) => {
+    for (let lineNumber = 0; lineNumber < lineNumbers; lineNumber += 1) {
+      logic15worker.postMessage([values, lineNumber, lineNumbers, true]);
+    }
   };
   // endregion score calculation
   // region print out part one
-  // y=10
-  const demoScore = calcPartOne(demoData, 10);
-  console.assert(demoScore === 26, `Algorithm is incorrect - expected: 26 calculated value: ${demoScore}`);
-  console.log('Demo-Score (Part One)  -> 26 ===', demoScore);
+  const logic15worker = new Worker('logic15worker.js');
+  logic15worker.onmessage = function (event) {
+    const {sortResult: scoreData, lineNumber, terminate, frequency} = event.data;
+    switch (lineNumber) {
+      case 10:
+        console.assert(scoreData.size === 26, `Algorithm is incorrect - expected: 26 calculated value: ${scoreData.size}`);
+        console.log('Demo-Score (Part One)  -> 26 ===', scoreData.size);
+        break;
+      case 2000000:
+        console.log('Life-Score (Part One)  -> (???) 5299855 ===', scoreData.size);
+        break;
+      case 20:
+        if (terminate)
+          logic15worker.terminate();
+        console.assert(frequency === 56000011, `Algorithm is incorrect - expected: 56000011 calculated value: ${frequency}`);
+        console.log('Demo-Score (Part Two)  -> 56000011 ===', frequency);
+        break;
+      case 4000000:
+        console.log('Life-Score (Part Two)  -> (???) ===', frequency);
+        break;
+      default:
+        break;
+    }
 
-  // y = 2000000
-  const lifeScore = calcPartOne(data, 2000000,);
-  console.log('Life-Score (Part One)  -> (???) 5299855 ===', lifeScore);
+  };
+
+  // logic15worker.postMessage([demoData, 10, null, false]);
+  // logic15worker.postMessage([data, 2000000, null, false]);
   // endregion print out part one
   // region print out part two
-  // const demoScorePT = calcPartTwo();
-  // console.assert(demoScorePT === 21, `Algorithm is incorrect - expected: 21 calculated value: ${demoScorePT}`);
-  // console.log('Demo-Score (Part Two)  -> 25 ===', demoScorePT);
-  //
-  // const lifeScorePT = calcPartTwo();
-  // console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
+  // calcPartTwo(demoData, 20);
+  calcPartTwo(data, 4000000);
   // endregion print out part two
 };
 
