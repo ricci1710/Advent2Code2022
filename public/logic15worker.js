@@ -48,8 +48,11 @@ const getKeyOfEmptyField = (lineNumber, lineNumbers, map) => {
   let searchKey;
   let lastXPos = 0;
   for (let [key,] of map.entries()) {
+    if (key.indexOf('-') >= 0)
+      continue;
+
     const xPos = parseInt(key.split(',')[0], 10);
-    if (xPos < 0 || xPos > lineNumbers)
+    if (xPos > lineNumbers)
       continue;
 
     if (lastXPos === xPos) {
@@ -69,8 +72,8 @@ onmessage = function (e) {
   const stampBSAllowed = e.data[3];
 
   const resultMap = new Map();
-
   const {playerField, sbMinDistance} = parseData(values);
+
   filterMap(playerField, (key, value) => {
     if (!stampBSAllowed && value === 'B')
       return false;
@@ -119,7 +122,9 @@ onmessage = function (e) {
     if (coordinate) {
       // found by multiplying its x coordinate by 4000000 and then adding its y coordinate.
       const frequency = coordinate.x * 4000000 + coordinate.y;
-      postMessage({terminate: true, frequency, lineNumber: lineNumbers});
+      postMessage({terminate: true, frequency, lineNumber, lineNumbers});
+    } else {
+      postMessage({terminate: false, lineNumber, lineNumbers});
     }
   } else
     postMessage({sortResult, lineNumber});

@@ -148,36 +148,48 @@ const Logic15 = () => {
   // region score calculation
   // von 0 - 4000000 Array
   const calcPartTwo = (values, lineNumbers) => {
-    for (let lineNumber = 0; lineNumber < lineNumbers; lineNumber += 1) {
-      logic15worker.postMessage([values, lineNumber, lineNumbers, true]);
-    }
   };
   // endregion score calculation
   // region print out part one
   const logic15worker = new Worker('logic15worker.js');
   logic15worker.onmessage = function (event) {
-    const {sortResult: scoreData, lineNumber, terminate, frequency} = event.data;
-    switch (lineNumber) {
-      case 10:
-        console.assert(scoreData.size === 26, `Algorithm is incorrect - expected: 26 calculated value: ${scoreData.size}`);
-        console.log('Demo-Score (Part One)  -> 26 ===', scoreData.size);
-        break;
-      case 2000000:
-        console.log('Life-Score (Part One)  -> (???) 5299855 ===', scoreData.size);
-        break;
-      case 20:
-        if (terminate)
-          logic15worker.terminate();
-        console.assert(frequency === 56000011, `Algorithm is incorrect - expected: 56000011 calculated value: ${frequency}`);
-        console.log('Demo-Score (Part Two)  -> 56000011 ===', frequency);
-        break;
-      case 4000000:
-        console.log('Life-Score (Part Two)  -> (???) ===', frequency);
-        break;
-      default:
-        break;
-    }
+    const {sortResult: scoreData, lineNumber, lineNumbers, terminate, frequency} = event.data;
+    if (!lineNumbers) {
+      switch (lineNumber) {
+        case 10:
+          console.assert(scoreData.size === 26, `Algorithm is incorrect - expected: 26 calculated value: ${scoreData.size}`);
+          console.log('Demo-Score (Part One)  -> 26 ===', scoreData.size);
+          break;
+        case 2000000:
+          console.log('Life-Score (Part One)  -> (???) 5299855 ===', scoreData.size);
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (lineNumbers) {
+        case 20:
+          if (terminate)
+            logic15worker.terminate();
+          console.assert(frequency === 56000011, `Algorithm is incorrect - expected: 56000011 calculated value: ${frequency}`);
+          console.log('Demo-Score (Part Two)  -> 56000011 ===', frequency);
+          break;
+        case 4000000: {
+          if (lineNumber === lineNumbers || terminate) {
+            console.log('Life-Score (Part Two)  -> (???) ===', frequency);
+            break;
+          }
 
+          const newlineNumber = lineNumber + 1;
+          console.log('Line: ', lineNumber, ' was calculated.');
+          logic15worker.postMessage([data, newlineNumber, lineNumbers, true]);
+          break;
+        }
+
+        default:
+          break;
+      }
+    }
   };
 
   // logic15worker.postMessage([demoData, 10, null, false]);
@@ -185,7 +197,8 @@ const Logic15 = () => {
   // endregion print out part one
   // region print out part two
   // calcPartTwo(demoData, 20);
-  calcPartTwo(data, 4000000);
+  // logic15worker.postMessage([data, 2000000, null, false]);
+  logic15worker.postMessage([data, 0, 4000000, true]);
   // endregion print out part two
 };
 
