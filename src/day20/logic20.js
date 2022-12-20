@@ -14,32 +14,34 @@ const Logic20 = () => {
   // region score calculation
   const calcPartOne = (values) => {
     const shiftArray = [...values];
-    console.log(values, 'init');
+    // console.log(values, 'init');
 
     values.forEach(item => {
       let position = shiftArray.findIndex(shiftItem => shiftItem === item);
       shiftArray.splice(position, 1);
       if (position + item <= 0) {
         position = shiftArray.length + position + item;
-        shiftArray.splice(position, 0, item);
+        shiftArray.splice(position, 0, {value: item, found: true});
       } else if (position + item >= shiftArray.length) {
         position = shiftArray.length - (position + item);
-        shiftArray.splice(position, 0, item);
+        shiftArray.splice(position, 0, {value: item, found: true});
       } else
-        shiftArray.splice(position + item, 0, item);
-      console.log(shiftArray, item);
+        shiftArray.splice(position + item, 0, {value: item, found: true});
+      // console.log(shiftArray, item);
     });
 
     let shiftArrayClone = [...shiftArray];
-    const first0Position = shiftArrayClone.findIndex(item => item === 0);
+    const test = shiftArrayClone.filter((item) => typeof item !== 'object');
+    console.assert(test.length === 0, `Algorithm is incorrect - expected: 0 calculated value: ${test.length}`);
 
+    const first0Position = shiftArrayClone.findIndex(item => item.value === 0);
     while (shiftArrayClone.length < 3000 + first0Position) {
       shiftArrayClone = shiftArrayClone.concat(shiftArray);
     }
 
-    const pos1000Value = shiftArrayClone[first0Position + 1000];
-    const pos2000Value = shiftArrayClone[first0Position + 2000];
-    const pos3000Value = shiftArrayClone[first0Position + 3000];
+    const pos1000Value = shiftArrayClone[first0Position + 1000].value;
+    const pos2000Value = shiftArrayClone[first0Position + 2000].value;
+    const pos3000Value = shiftArrayClone[first0Position + 3000].value;
 
     return pos1000Value + pos2000Value + pos3000Value;
   };
@@ -53,8 +55,8 @@ const Logic20 = () => {
   console.assert(demoScore === 3, `Algorithm is incorrect - expected: 3 calculated value: ${demoScore}`);
   console.log('Demo-Score (Part One)  -> 3 ===', demoScore);
 
-  // const lifeScore = calcPartOne(data);
-  // console.log('Life-Score (Part One)  -> (???) -5054 ===', lifeScore);
+  const lifeScore = calcPartOne(data);
+  console.log('Life-Score (Part One)  -> (???) -5054, -5129 ===', lifeScore);
   // // endregion print out part one
   // // region print out part two
   // const demoScorePT = calcPartTwo();
