@@ -1,8 +1,7 @@
 import logo from './logo.svg';
-import {useEffect} from "react";
 
 import './App.css';
-import Logic15 from "./day15/logic15";
+import Logic20 from "./day20/logic20";
 
 /**
  * .."""....."""

@@ -165,10 +165,34 @@ const Logic16 = () => {
   const demoData = MOCK_DEMO_DATA_DAY_16.split('\n');
   // endregion prepare mock data
   // region score rules
+  const prepare = (values) => {
+    const neuroMap = new Map();
+    values.forEach((item) => {
+      const itemParts = item.split(';');
+      const nodeInfos = itemParts[0].split(' ');
+      let tunnelsInfos = itemParts[1].split(/.*valves/gm)[1].split(',');
+      if (tunnelsInfos.length === 1)
+        tunnelsInfos = itemParts[1].split(/.*valve/gm)[1].split(',');
+
+      const valves = [];
+      tunnelsInfos.forEach((item) => {
+        const valve = item.trim();
+        if (valve.length === 2)
+          valves.push(valve);
+      });
+
+      const rate = parseInt(nodeInfos[4].split('=')[1]);
+      neuroMap.set(nodeInfos[1], {rate, valves});
+      console.log(neuroMap);
+    });
+  };
+
   // endregion score rules
   // region score calculation
-  const calcPartOne = () => {
+  const calcPartOne = (values) => {
+    prepare(values);
 
+    return 0;
   };
 
   const calcPartTwo = () => {
@@ -176,20 +200,20 @@ const Logic16 = () => {
   };
   // endregion score calculation
   // region print out part one
-  const demoScore = calcPartOne();
-  console.assert(demoScore === 1651, `Algorithm is incorrect - expected: 21 calculated value: ${demoScore}`);
+  const demoScore = calcPartOne(demoData);
+  console.assert(demoScore === 1651, `Algorithm is incorrect - expected: 1651 calculated value: ${demoScore}`);
   console.log('Demo-Score (Part One)  -> 1651 ===', demoScore);
 
-  const lifeScore = calcPartOne();
-  console.log('Life-Score (Part One)  -> (???) ===', lifeScore);
+  // const lifeScore = calcPartOne();
+  // console.log('Life-Score (Part One)  -> (???) ===', lifeScore);
   // endregion print out part one
   // region print out part two
-  const demoScorePT = calcPartTwo();
-  console.assert(demoScorePT === 21, `Algorithm is incorrect - expected: 21 calculated value: ${demoScorePT}`);
-  console.log('Demo-Score (Part Two)  -> 25 ===', demoScorePT);
+  // const demoScorePT = calcPartTwo();
+  // console.assert(demoScorePT === 21, `Algorithm is incorrect - expected: 21 calculated value: ${demoScorePT}`);
+  // console.log('Demo-Score (Part Two)  -> 25 ===', demoScorePT);
 
-  const lifeScorePT = calcPartTwo();
-  console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
+  // const lifeScorePT = calcPartTwo();
+  // console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
   // endregion print out part two
 };
 
