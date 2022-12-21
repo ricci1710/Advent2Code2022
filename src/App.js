@@ -1,8 +1,7 @@
 import logo from './logo.svg';
-import {useEffect} from "react";
 
 import './App.css';
-import Logic15 from "./day15/logic15";
+import Logic20 from "./day20/logic20";
 
 /**
  * .."""....."""
@@ -18,10 +17,12 @@ import Logic15 from "./day15/logic15";
  * @constructor
  */
 function App() {
-  useEffect(() => {
-    Logic15();
-  }, []);
+  if (window.REACT_START === 0) {
+    window.REACT_START += 1;
+    return (<div className="App"/>);
+  }
 
+  Logic20();
 
   return (
     <div className="App">
