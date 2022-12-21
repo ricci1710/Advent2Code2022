@@ -829,6 +829,29 @@ const Logic09 = () => {
         // console.log(playersField);
       }
     };
+    const moveLeft2 = (distance) => {
+      const calculate = (prev, current, record) => {
+        if (prev === undefined) // dann gibt es keine Regel
+          current.x -= 1;
+        else if (prev.y === current.y && (prev.x + current.x) === 2) {
+          current.x -= 1;
+          if (record)
+            playersField[current.y][current.x] = '#';
+        } else if ((prev.x - current.x) == 2) {
+          current.y = prev.y;
+          current.x = prev.x + 1;
+          if (record)
+            playersField[current.y][current.x] = '#';
+        }
+        return current;
+      };
+      for (let idx = 0; idx < distance; idx += 1) {
+        for (let snakeIdx = 0; snakeIdx < snake.size; snakeIdx += 1) {
+          const current = calculate(snake.get(snakeIdx - 1), snake.get(snakeIdx), snakeIdx === snake.size - 1);
+          snake.set(snakeIdx, current);
+        }
+      }
+    };
 
     const calcPartOne = (values, snakeSize, playerFieldSize) => {
       initState(values, snakeSize, playerFieldSize);
@@ -842,7 +865,7 @@ const Logic09 = () => {
             moveRight(distance);
             break;
           case 'L':
-            moveLeft(distance);
+            moveLeft2(distance);
             break;
           case 'U':
             moveUp(distance);
@@ -863,9 +886,9 @@ const Logic09 = () => {
     };
     // endregion score calculation
     // region print out part one
-//     const demoScore = calcPartOne(demoData, 2, 10);
-//     console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
-//     console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
+    const demoScore = calcPartOne(demoData, 2, 10);
+    console.assert(demoScore === 13, `Algorithm is incorrect - expected: 13 calculated value: ${demoScore}`);
+    console.log('Demo-Score (Part One)  -> 13 ===', demoScore);
 //     const lifeScore = calcPartOne(data, 2, 1000);
 //     console.log('Life-Score (Part One)  -> (???) 6314 ===', lifeScore);
     // endregion print out part one
