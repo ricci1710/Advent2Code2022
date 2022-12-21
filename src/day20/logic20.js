@@ -148,7 +148,6 @@ const Logic20 = () => {
   const calcPartOne = (values) => {
     const shiftArray = [...values];
     // console.log(values, 'init');
-
     values.forEach(item => {
       //console.log(item);
       let position = shiftArray.findIndex(shiftItem => shiftItem === item);
@@ -165,13 +164,9 @@ const Logic20 = () => {
         shiftArray.splice(position, 0, item);
       } else
         shiftArray.splice(position + item.val, 0, item);
-      console.log(shiftArray, item);
     });
 
     let shiftArrayClone = [...shiftArray];
-    //const test = shiftArrayClone.filter((item) => typeof item !== 'object');
-    //console.assert(test.length === 0, `Algorithm is incorrect - expected: 0 calculated value: ${test.length}`);
-
     const first0Position = shiftArrayClone.findIndex(item => item.val === 0);
     while (shiftArrayClone.length < 3000 + first0Position) {
       shiftArrayClone = shiftArrayClone.concat(shiftArray);
@@ -181,34 +176,30 @@ const Logic20 = () => {
     const pos2000Value = shiftArrayClone[first0Position + 2000].val;
     const pos3000Value = shiftArrayClone[first0Position + 3000].val;
 
-    //console.log(pos1000Value + pos2000Value + pos3000Value);
-
     return pos1000Value + pos2000Value + pos3000Value;
-  };
-
-  const calcPartTwo = (values) => {
-    const decryptValues = values.map((item) => {
-      item.val *= decryptionKey;
-      return item;
-    });
-    return calcPartOne(decryptValues);
   };
   // endregion score calculation
   // region print out part one
-  //const demoScore = calcPartOne(demoData);
-  //console.assert(demoScore === 3, `Algorithm is incorrect - expected: 3 calculated value: ${demoScore}`);
-  //console.log('Demo-Score (Part One)  -> 3 ===', demoScore);
+  const demoScore = calcPartOne(demoData);
+  console.assert(demoScore === 3, `Algorithm is incorrect - expected: 3 calculated value: ${demoScore}`);
+  console.log('Demo-Score (Part One)  -> 3 ===', demoScore);
 
-  //const lifeScore = calcPartOne(data);
-  //console.log('Life-Score (Part One)  -> (???) 2827 ===', lifeScore);
+  const lifeScore = calcPartOne(data);
+  console.log('Life-Score (Part One)  -> (???) 2827 ===', lifeScore);
   // endregion print out part one
   // region print out part two
-  const demoScorePT = calcPartTwo(demoData);
-  console.assert(demoScorePT === 1623178306, `Algorithm is incorrect - expected: 1623178306 calculated value: ${demoScorePT}`);
-  console.log('Demo-Score (Part Two)  -> 1623178306 ===', demoScorePT);
-  //
-  // const lifeScorePT = calcPartTwo();
-  // console.log('Life-Score (Part Two)  -> (???) 2222 ===', lifeScorePT);
+  const logic20worker = new Worker('logic20worker.js');
+  logic20worker.onmessage = function (event) {
+    const {score, isDemoData} = event.data;
+    if (isDemoData) {
+      console.assert(score === 1623178306, `Algorithm is incorrect - expected: 1623178306 calculated value: ${score}`);
+      console.log('Demo-Score (Part Two)  -> 1623178306 ===', score);
+    } else {
+      console.log('Life-Score (Part Two)  -> (???) 7834270093909 ===', score);
+    }
+  };
+  logic20worker.postMessage([demoData, decryptionKey, true]);
+  logic20worker.postMessage([data, decryptionKey, false]);
   // endregion print out part two
 };
 
