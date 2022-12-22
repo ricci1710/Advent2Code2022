@@ -59,23 +59,33 @@ const Logic21 = () => {
   const demoData = MOCK_DEMO_DATA_DAY_21.split('\n');
   // endregion prepare mock data
   // region score rules
+  const createMonkeyMap = (values) => {
+    const monkeyMap = new Map();
+    values.forEach((item) => {
+      const lineParts = item.split(': ');
+      monkeyMap.set(lineParts[0], lineParts[1])
+    });
+    return monkeyMap;
+  };
   // endregion score rules
   // region score calculation
-  const calcPartOne = () => {
-
+  const calcPartOne = (values) => {
+    const monkeyMap = createMonkeyMap(values);
+    const root = monkeyMap.get('root');
+    
   };
 
-  const calcPartTwo = () => {
+  const calcPartTwo = (values) => {
 
   };
   // endregion score calculation
   // region print out part one
-  const demoScore = calcPartOne();
+  const demoScore = calcPartOne(demoData);
   console.assert(demoScore === 152, `Algorithm is incorrect - expected: 152 calculated value: ${demoScore}`);
   console.log('Demo-Score (Part One)  -> 152 ===', demoScore);
 
-  const lifeScore = calcPartOne();
-  console.log('Life-Score (Part One)  -> (???) 1700 ===', lifeScore);
+  //const lifeScore = calcPartOne(data);
+  //console.log('Life-Score (Part One)  -> (???) 1700 ===', lifeScore);
   // endregion print out part one
   // region print out part two
 

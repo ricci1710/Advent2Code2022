@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 
 import './App.css';
-import Logic20 from "./day20/logic20";
+import Logic22 from "./day22/logic22";
 
 /**
  * .."""....."""
@@ -22,7 +22,7 @@ function App() {
     return (<div className="App"/>);
   }
 
-  Logic20();
+  Logic22();
 
   return (
     <div className="App">
