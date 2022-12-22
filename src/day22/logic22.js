@@ -98,6 +98,15 @@ const Logic22 = () => {
   const demoData = MOCK_DEMO_DATA_DAY_22.split('\n');
   // endregion prepare mock data
   // region score rules
+  const rotationMap = new Map();
+  rotationMap.set('>R', 'v');
+  rotationMap.set('vR', '<');
+  rotationMap.set('<R', '^');
+  rotationMap.set('^R', '>');
+  rotationMap.set('>L', '^');
+  rotationMap.set('^L', '<');
+  rotationMap.set('<L', 'v');
+  rotationMap.set('vL', '>');
   /**
    * Eine Zahl gibt die Anzahl der Steine an, die Sie in die Richtung bewegen müssen, in die Sie schauen. Wenn Sie
    * gegen eine Wand laufen, hören Sie auf, sich vorwärts zu bewegen, und fahren mit der nächsten Anweisung fort.
@@ -160,6 +169,37 @@ const Logic22 = () => {
     console.assert(commandLine[commandLine.length] === commandTable[commandTable.length], `Algorithm is incorrect - expected: ${commandLine[commandLine.length]} calculated value: ${commandTable[commandTable.length]}`)
     return commandTable;
   };
+
+  const rotatePlayer = (player, cmd) => {
+    return rotationMap.get(player + cmd);
+  };
+
+  const moveLeft = (steps, wayPoint, playBoard) => {
+    return false;
+  };
+
+  const moveRight = (steps, wayPoint, playBoard) => {
+    const line = playBoard[wayPoint.row];
+    let char;
+    for (let idx = 1; idx <= steps; idx += 1) {
+      if (wayPoint.column + idx > line.length)
+        char = line[idx % playBoard.length]; // => suche erste . oder #
+      else
+        char = line[idx];
+
+      if (char === '#')
+        break;
+      else if (char === '.')
+        wayPoint.column += 1;
+    }
+    return false;
+  };
+  const movUp = (steps, wayPoint, playBoard) => {
+    return false;
+  };
+  const moveDown = (steps, wayPoint, playBoard) => {
+    return false;
+  };
   // endregion score rules
   // region score calculation
   const calcPartOne = (values) => {
@@ -169,9 +209,34 @@ const Logic22 = () => {
 
     let gameOver = false;
     let cmdIndex = 0;
+    let player = '>';
+
     while (gameOver === false) {
       const cmd = commandTable[cmdIndex];
       cmdIndex += 1;
+
+      if (cmd === 'R' || cmd === 'L') {
+        // rotate player
+        player = rotatePlayer(player, cmd);
+      } else {
+        // move player
+        switch (player) {
+          case '>':
+            gameOver = moveRight(cmd, wayPoint, playBoard);
+            break;
+          case '<':
+            gameOver = moveLeft(cmd, wayPoint, playBoard);
+            break;
+          case '^':
+            gameOver = movUp(cmd, wayPoint, playBoard);
+            break;
+          case 'v':
+            gameOver = moveDown(cmd, wayPoint, playBoard)
+            break;
+          default:
+            break;
+        }
+      }
 
       if (cmdIndex === commandTable.length)
         gameOver = true;
