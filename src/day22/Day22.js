@@ -27,6 +27,10 @@ class Day22 {
     return {wayPoint, commands, playBoard};
   }
 
+  rotatePlayer(player, cmd) {
+    return this.rotationMap.get(player + cmd);
+  }
+
   static parseCommandLine(commandLine) {
     let lPosition = 0;
     let rPosition = 0;
@@ -61,38 +65,26 @@ class Day22 {
     return commandTable;
   }
 
-  rotatePlayer(player, cmd) {
-    return this.rotationMap.get(player + cmd);
+  static getColumnLine(column, playBoard) {
+    const columnLine = [];
+    for (const rowLine of playBoard) {
+      if (column === rowLine.length)
+        columnLine.push(' ');
+      else
+        columnLine.push(rowLine[column]);
+    }
+    return columnLine;
   }
 
-  static moveLeft(steps, wayPoint, playBoard) {
-    const line = playBoard[wayPoint.row];
-    let char;
-    for (let idx = 1; idx <= steps; idx += 1) {
-      // Überlauf rechts?
-      if (wayPoint.column - 1 < 0) {
-        // Bestimme den Anfang der Zeile
-        const lineStartPos1 = line.lastIndexOf('.'); // => suche erste . oder #
-        const lineStartPos2 = line.lastIndexOf('#');
-        if (lineStartPos1 < lineStartPos2)
-          break; // # an erster Stelle => Abbruch
-
-        // Punkt an erster Stelle.
-        char = line[lineStartPos1];
-        wayPoint.column = lineStartPos1 + 1;
-      } else
-        char = line[wayPoint.column - 1];
-
-      if (char === '#')
-        break;
-      else if (char === '.')
-        wayPoint.column -= 1;
-    }
+  static moveLeft(steps, wayPoint, line) {
+    const reverseLine = line.reverse();
+    wayPoint.column = line.length - 1 - wayPoint.column;
+    Day22.moveRight(steps, wayPoint, reverseLine);
+    wayPoint.column = line.length - 1 - wayPoint.column;
     return false;
   }
 
-  static moveRight(steps, wayPoint, playBoard) {
-    const line = playBoard[wayPoint.row];
+  static moveRight(steps, wayPoint, line) {
     let char;
     for (let idx = 1; idx <= steps; idx += 1) {
       // Überlauf rechts?
@@ -117,11 +109,15 @@ class Day22 {
     return false;
   }
 
-  static movUp(steps, wayPoint, playBoard) {
+  static movUp(steps, wayPoint, line) {
+    // row--
+    Day22.moveLeft(steps, wayPoint, line);
     return false;
   }
 
-  static moveDown(steps, wayPoint, playBoard) {
+  static moveDown(steps, wayPoint, line) {
+    // row++
+    Day22.moveRight(steps, wayPoint, line);
     return false;
   }
 
@@ -142,13 +138,14 @@ class Day22 {
         // rotate player
         player = this.rotatePlayer(player, cmd);
       } else {
+        const line = playBoard[wayPoint.row];
         // move player
         switch (player) {
           case '>':
-            gameOver = Day22.moveRight(cmd, wayPoint, playBoard);
+            gameOver = Day22.moveRight(cmd, wayPoint, line);
             break;
           case '<':
-            gameOver = Day22.moveLeft(cmd, wayPoint, playBoard);
+            gameOver = Day22.moveLeft(cmd, wayPoint, line);
             break;
           case '^':
             gameOver = Day22.movUp(cmd, wayPoint, playBoard);

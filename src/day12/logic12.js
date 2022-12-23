@@ -93,6 +93,8 @@ const Logic12 = () => {
   const lifeStartCoordinate = getStartCoordinate(lifePlayerField);
 
   const demoEndCoordinate = getEndCoordinate(demoPlayerField);
+  const lifeEndCoordinate = getEndCoordinate(lifePlayerField);
+
   console.log(lifeStartCoordinate);
   console.assert(lifePlayerField[lifeStartCoordinate.y][lifeStartCoordinate.x] === 'S', `Algorithm is incorrect - expected: 'S' calculated value: ${lifePlayerField[lifeStartCoordinate.y][lifeStartCoordinate.x]}`);
   // endregion prepare mock data
@@ -108,7 +110,10 @@ const Logic12 = () => {
 
     if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x, y: y - 1, counter: counter + 1, char: String.fromCharCode(lowerChar)};
-      wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
+      const key = `${wayPoint.x},${wayPoint.y}`;
+      const value = wayList.get(key);
+      if (!value)
+        wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
   };
   const addToWayListDown = (fieldPoint, playerField, wayList) => {
@@ -122,7 +127,10 @@ const Logic12 = () => {
 
     if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x, y: y + 1, counter: counter + 1, char: String.fromCharCode(lowerChar)};
-      wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
+      const key = `${wayPoint.x},${wayPoint.y}`;
+      const value = wayList.get(key);
+      if (!value)
+        wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
   };
 
@@ -138,7 +146,10 @@ const Logic12 = () => {
     // if (lowerChar-higherChar < -1) {
     if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x: x + 1, y, counter: counter + 1, char: String.fromCharCode(lowerChar)};
-      wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
+      const key = `${wayPoint.x},${wayPoint.y}`;
+      const value = wayList.get(key);
+      if (!value)
+        wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
   };
 
@@ -153,7 +164,10 @@ const Logic12 = () => {
 
     if (higherChar <= lowerChar || higherChar - 1 === lowerChar) {
       const wayPoint = {x: x - 1, y, counter: counter + 1, char: String.fromCharCode(lowerChar)};
-      wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
+      const key = `${wayPoint.x},${wayPoint.y}`;
+      const value = wayList.get(key);
+      if (!value)
+        wayList.set(`${wayPoint.x},${wayPoint.y}`, wayPoint);
     }
   };
   // endregion score rules
@@ -182,14 +196,38 @@ const Logic12 = () => {
       counter += 1;
     }
 
-    const pathMap = new Array(5).fill('x').map(() => new Array(8).fill('x'));
+    const pathMap = new Array(playerField.length).fill('x').map(() => new Array(playerField[0].length).fill('x'));
     for (let [, value] of wayList) {
       const wayPoint = value;
       pathMap[wayPoint.y][wayPoint.x] = wayPoint.counter;
     }
 
+    console.log(pathMap[endPos.y][endPos.x]);
+
+    const getPathLength = (startPoint) => {
+      let left = Number.MAX_VALUE;
+      let right = Number.MAX_VALUE;
+      let up = Number.MAX_VALUE;
+      let down = Number.MAX_VALUE;
+
+      if (startPoint.x - 1 >= 0)
+        left = pathMap[startPoint.y][startPoint.x - 1];
+      if (startPoint.x + 1 >= 0)
+        right = pathMap[startPoint.y][startPoint.x + 1];
+      if (startPoint.y - 1 >= 0)
+        up = pathMap[startPoint.y - 1][startPoint.x];
+      if (startPoint.y + 1 >= 0)
+        down = pathMap[startPoint.y + 1][startPoint.x];
+
+      let pathLength = Math.min(left, right);
+      pathLength = Math.min(pathLength, up);
+      pathLength = Math.min(pathLength, down);
+
+      return pathLength + 1;
+    };
+
     console.log(pathMap);
-    return 0;
+    return getPathLength(startPos);
   };
 
   const calcPartTwo = () => {
@@ -201,8 +239,8 @@ const Logic12 = () => {
   console.assert(demoScore === 31, `Algorithm is incorrect - expected: 31 calculated value: ${demoScore}`);
   console.log('Demo-Score (Part One)  -> 31 ===', demoScore);
 
-  // const lifeScore = calcPartOne(lifeStartCoordinate, lifePlayerField);
-  // console.log('Life-Score (Part One)  -> (???)  ===', lifeScore);
+  const lifeScore = calcPartOne(lifeStartCoordinate, lifeEndCoordinate, lifePlayerField);
+  console.log('Life-Score (Part One)  -> (???)  ===', lifeScore);
   // endregion print out part one
   // region print out part two
   // const demoScorePT = calcPartTwo();
