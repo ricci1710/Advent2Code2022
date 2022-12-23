@@ -122,7 +122,7 @@ const Logic22 = () => {
    * Es ist möglich, dass das nächste Plättchen (nach dem Umwickeln) eine Wand ist; dies zählt immer noch als eine Wand
    * vor Ihnen, und so stoppt die Bewegung, bevor Sie tatsächlich auf die andere Seite des Brettes wechseln.
    */
-  const intPlayground = (values) => {
+  const initPlayground = (values) => {
     const wayPoint = {row: 0, column: 0};
     const playBoard = [];
     for (const item of values) {
@@ -181,11 +181,19 @@ const Logic22 = () => {
   const moveRight = (steps, wayPoint, playBoard) => {
     const line = playBoard[wayPoint.row];
     let char;
+    let offset = 0;
     for (let idx = 1; idx <= steps; idx += 1) {
-      if (wayPoint.column + idx > line.length)
-        char = line[idx % playBoard.length]; // => suche erste . oder #
-      else
-        char = line[idx];
+      if (wayPoint.column + idx > line.length) {
+        // Bestimme den Anfang der Zeile
+        const lineStartPos1 = line.indexOf('.'); // => suche erste . oder #
+        const lineStartPos2 = line.indexOf('#');
+        if (lineStartPos2 < lineStartPos1)
+          break;
+
+        offset = lineStartPos1 - idx;
+        wayPoint.column = offset;
+      } else
+        char = line[idx + offset];
 
       if (char === '#')
         break;
@@ -203,7 +211,7 @@ const Logic22 = () => {
   // endregion score rules
   // region score calculation
   const calcPartOne = (values) => {
-    const {wayPoint, commands, playBoard} = intPlayground(values);
+    const {wayPoint, commands, playBoard} = initPlayground(values);
     const commandTable = parseCommandLine(commands);
     //console.log(wayPoint, commands, playBoard, commandTable);
 
