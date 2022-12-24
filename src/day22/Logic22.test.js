@@ -59,7 +59,11 @@ describe('Test Move', () => {
   });
 
   test('Down', () => {
-    // expect(linkElement).toBeInTheDocument();
+    const wayPoint = {row: 0, column: 8};
+    const line = '     v.#.   '.split('');
+    Day22.moveRight(10, wayPoint, line);
+    expect(wayPoint.row).toEqual(0);
+    expect(wayPoint.column).toEqual(10);
   });
 });
 describe('Test Class Day22', () => {
