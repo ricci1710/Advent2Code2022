@@ -122,14 +122,95 @@
  */
 class Day25 {
   constructor(values) {
+    // 10^x
+    this.decimal2SNAFU = new Map();
+    this.decimal2SNAFU.set(-2, '=');
+    this.decimal2SNAFU.set(-1, '-');
+    this.decimal2SNAFU.set(0, '0');
+    this.decimal2SNAFU.set(1, '1');
+    this.decimal2SNAFU.set(2, '2');
+    this.decimal2SNAFU.set(3, '1='); // 5^1 - 2
+    this.decimal2SNAFU.set(4, '1-');
+    this.decimal2SNAFU.set(5, '10');
+    this.decimal2SNAFU.set(6, '11');
+    this.decimal2SNAFU.set(7, '12');
+    this.decimal2SNAFU.set(8, '2=');
+    this.decimal2SNAFU.set(9, '2-');
+    this.decimal2SNAFU.set(10, '20');
+    this.decimal2SNAFU.set(15, '1=0');
+    this.decimal2SNAFU.set(20, '1-0');
+    this.decimal2SNAFU.set(2022, '1=11-2');
+    this.decimal2SNAFU.set(12345, '1-0---0');
+    this.decimal2SNAFU.set(314159265, '1121-1110-1=0');
+
+    // 5^x
+    this.SNAFU2Decimal = new Map();
+    this.SNAFU2Decimal.set('1=-0-2', 1747);
+    this.SNAFU2Decimal.set('12111', 906);
+    this.SNAFU2Decimal.set('2=0=', 198);
+    this.SNAFU2Decimal.set('21', 11);
+    this.SNAFU2Decimal.set('2=01', 201);
+    this.SNAFU2Decimal.set('111', 31);
+    this.SNAFU2Decimal.set('20012', 1257);
+    this.SNAFU2Decimal.set('112', 32);
+    this.SNAFU2Decimal.set('1=-1=', 353);
+    this.SNAFU2Decimal.set('1-12', 107);
+    this.SNAFU2Decimal.set('12', 7);
+    this.SNAFU2Decimal.set('1=', 3);
+    this.SNAFU2Decimal.set('122', 37);
   }
 
-  initPlayground() {
+  convertSNAFU2Decimal(value) {
+    const snafu = value.split('').reverse();
+    let result = 0;
+    for (let y = 0; y < snafu.length; y += 1) {
+      const item = snafu[y];
+      let num = parseInt(item, 10);
+      if (item === '-')
+        num = -1;
+      else if (item === '=')
+        num = -2;
 
+      result += num * Math.pow(5, y);
+    }
+    return result;
+  }
+
+  /**
+   * Example 1 (decimal => octal):
+   *
+   * Given Decimal Number: 85
+   *
+   * Method followed: Divide the number by 8 until its zero and note remainder in each case.
+   *                                                                                                5^    543210
+   * Divide 85 by 8, number is 10, remainder is 5.      1747 / 5 = 349,2 / 69,4 / 13,4 / 2,3 / 0,2 === // 1=-0-2
+   * Divide 10 by 8, number is 1, remainder is 2.
+   * Divide 1 by 8, number is 0, remainder is 1.
+   *
+   * So the octal number is 125 (remainders in reverse order).
+   *
+   * Erlaubter WerteBereich: 2,1,0,-1,-2
+   * @param value
+   */
+  convertDecimal2SNAFU(value) {
+    const result = [];
+
+    let curValue = value;
+    let quotient;
+    let remainder;
+    do {
+      quotient = Math.floor(curValue / 5); // => 4 => the times 3 fits into 13
+      remainder = curValue % 5;
+      curValue = quotient;
+      result.push(remainder);
+    } while (quotient > 0)
+
+    // 1=-0-2
+    console.log(result);
+    return result.toString();
   }
 
   calcPartOne() {
-    const {wayPoint, commands, playBoard} = this.initPlayground();
     return '';
   }
 

@@ -1,0 +1,128 @@
+Als die Expedition schließlich den Startpunkt erreicht, schweben mehrere große Heißluftballons zu Ihnen herab.
+Die Besatzungen beginnen schnell mit dem Abladen der Ausrüstung, die die Ballons mitgebracht haben: viele
+Heißluftballon-Bausätze, einige Treibstofftanks und eine Treibstoffheizmaschine.
+
+Die Treibstoffheizmaschine ist ein neuer Bestandteil des Prozesses. Als dieser Berg noch ein Vulkan war, war die
+Umgebungstemperatur angenehmer; jetzt ist es so kalt, dass der Treibstoff nicht funktioniert, wenn er nicht vorher
+aufgewärmt wird.
+
+Die Elfen haben der neuen Maschine bereits ein Paar Kulleraugen aufgesetzt und sie "Bob" genannt, offenbar um sie
+willkommen zu heißen.
+
+Um den Brennstoff zu erwärmen, muss Bob die Gesamtmenge des zu verarbeitenden Brennstoffs im Voraus kennen, damit er
+die Heizleistung und die Durchflussmenge korrekt kalibrieren kann. Diese Menge ist einfach die Summe des
+Brennstoffbedarfs aller Heißluftballons, und dieser Brennstoffbedarf ist sogar deutlich auf der Seite des Brenners
+jedes Heißluftballons angegeben.
+
+Du gehst davon aus, dass die Elfen keine Probleme haben werden, ein paar Zahlen zusammenzuzählen, und willst gerade
+zurückgehen, um herauszufinden, welcher Ballon dir gehört, als du einen Klaps auf die Schulter bekommst. Offenbar
+werden für den Treibstoffbedarf Zahlen verwendet, die in einem Format geschrieben sind, das die Elfen nicht kennen,
+und sie brauchen deine Hilfe, um sie zu entziffern.
+
+Du erstellst eine Liste aller Treibstoffanforderungen (deine Rätseleingabe), aber auch du erkennst das Zahlenformat
+nicht. Zum Beispiel:
+
+1=-0-2
+12111
+2=0=
+21
+2=01
+111
+20012
+112
+1=-1=
+1-12
+12
+1=
+122
+
+Zum Glück ist auf Bob eine Telefonnummer für den Kundendienst angegeben. Sie lassen sich nicht abschrecken, rufen an
+und bitten um Hilfe.
+
+"Das ist richtig, geben Sie einfach die Brennstoffmenge für den... oh, für mehr als einen Brenner? Kein Problem, Sie
+müssen nur unsere speziellen ziffernanalogen Brennstoffeinheiten zusammenzählen. Zum Patent angemeldet! Sie sind viel
+besser als normale Zahlen für..."
+
+Sie erwähnen, dass es hier oben ziemlich kalt ist, und fragen, ob sie weitermachen können.
+
+"Okay, unsere Special Numeral-Analogue Fuel Units - kurz SNAFU - sind so etwas wie normale Zahlen. Normale Zahlen
+haben, von rechts beginnend, eine Einerstelle, eine Zehnerstelle, eine Hunderterstelle und so weiter, wobei die Ziffer
+an jeder Stelle angibt, wie viel man von diesem Wert hat."
+
+"SNAFU funktioniert genauso, nur dass hier Fünferpotenzen statt Zehnerpotenzen verwendet werden. Von rechts beginnend
+hat man eine Einerstelle, eine Fünferstelle, eine Fünfundzwanzigerstelle, eine Hundertfünfundzwanzigerstelle und so
+ weiter. So einfach ist das!"
+
+Du fragst, warum einige der Ziffern wie - oder = anstelle von "Ziffern" aussehen.
+
+"Weißt du, ich habe die Ingenieure nie gefragt, warum sie das gemacht haben. Anstelle der Ziffern vier bis null lauten
+die Ziffern 2, 1, 0, Minus (geschrieben -) und Doppelminus (geschrieben =). Minus hat den Wert -1 und Doppelminus den
+Wert -2."
+
+"Da zehn (in normalen Zahlen) zwei Fünfen und keine Einsen sind, wird es in SNAFU als 20 geschrieben. Da acht
+(in normalen Zahlen) zwei Fünfen minus zwei Einsen ist, wird es 2= geschrieben."
+
+"Man kann es auch in die andere Richtung machen. Nehmen wir an, du hast die SNAFU-Zahl 2=-01. Das ist 2 an der 625er
+Stelle, = (Doppelminus) an der 125er Stelle, - (Minus) an der 25er Stelle, 0 an der 5er Stelle und 1 an der 1er Stelle.
+(2 mal 625) plus (-2 mal 125) plus (-1 mal 25) plus (0 mal 5) plus (1 mal 1).
+Das sind 1250 plus -250 plus -25 plus 0 plus 1. 976!"
+
+"Ich sehe hier, dass Sie über unseren Premium-Uplink-Service verbunden sind, also werde ich Ihnen jetzt unsere
+praktische SNAFU-Broschüre übermitteln. Brauchen Sie sonst noch etwas?"
+
+Sie fragen, ob der Treibstoff bei diesen Temperaturen überhaupt funktioniert.
+
+"Moment, wie kalt ist es? Es ist unmöglich, dass der Treibstoff - oder irgendein Treibstoff - unter diesen Bedingungen
+funktioniert! Es gibt nur ein paar Orte in der... Wo waren Sie noch mal?"
+
+In diesem Moment sehen Sie, wie einer der Elfen ein paar Tropfen aus einem schneeflöckchenförmigen Behälter in einen
+der Treibstofftanks schüttet, dem Kundendienstmitarbeiter für seine Zeit dankt und die Verbindung unterbricht.
+
+Die SNAFU-Broschüre enthält einige weitere Beispiele für dezimale ("normale") Zahlen und ihre SNAFU-Gegenstücke:
+
+  Decimal          SNAFU
+        1              1
+        2              2
+        3             1=
+        4             1-
+        5             10
+        6             11
+        7             12
+        8             2=
+        9             2-
+       10             20
+       15            1=0
+       20            1-0
+     2022         1=11-2
+    12345        1-0---0
+314159265  1121-1110-1=0
+
+Auf der Grundlage dieses Verfahrens können die SNAFU-Zahlen im obigen Beispiel wie folgt in Dezimalzahlen umgewandelt
+werden:
+
+ SNAFU  Decimal
+1=-0-2     1747
+ 12111      906
+  2=0=      198
+    21       11
+  2=01      201
+   111       31
+ 20012     1257
+   112       32
+ 1=-1=      353
+  1-12      107
+    12        7
+    1=        3
+   122       37
+
+In Dezimalzahlen ausgedrückt, ist die Summe dieser Zahlen 4890.
+
+Als Sie diese Zahl in Bobs Konsole eingeben wollen, stellen Sie fest, dass einige Tasten, die Sie erwartet
+hatten, fehlen. Stattdessen sind die Schaltflächen mit =, -, 0, 1 und 2 beschriftet. Bob braucht den Eingabewert
+als SNAFU-Zahl, nicht als Dezimalzahl.
+
+In umgekehrter Reihenfolge können Sie feststellen, dass für die Dezimalzahl 4890 die SNAFU-Zahl, die Sie an Bobs
+Konsole eingeben müssen, 2=-1=0 ist.
+
+Den Elfen wird langsam kalt. Welche SNAFU-Zahl geben Sie in Bobs Konsole ein?
+
