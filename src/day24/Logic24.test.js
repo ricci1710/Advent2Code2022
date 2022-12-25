@@ -11,6 +11,9 @@ describe('Test Class Day24', () => {
     const size = day24.playBoard.size();
     expect(8).toEqual(size.x);
     expect(6).toEqual(size.y);
+
+    const blizzards = day24.blizzards;
+    expect(19).toEqual(blizzards.size);
   });
   test('getRowLine', () => {
     const demoData = MOCK_DEMO_DATA_DAY_24.split('\n');
@@ -25,5 +28,11 @@ describe('Test Class Day24', () => {
     const columnLine = day24.playBoard.getColumnLine(4);
     expect(6).toEqual(columnLine.length);
     expect('#<.>^#').toEqual(Array2d.lineToString(columnLine));
+  });
+  test('calcPartOne', () => {
+    const demoData = MOCK_DEMO_DATA_DAY_24.split('\n');
+    const day24 = new Day24(demoData);
+    const result = day24.calcPartOne();
+    expect(18).toEqual(result);
   });
 });

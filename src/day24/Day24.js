@@ -1,4 +1,5 @@
 import Array2d from "../utils/Array2d";
+import MovePoint from "../utils/MovePoint";
 
 /**
  * --- Day 24: Blizzard Basin ---
@@ -253,14 +254,27 @@ import Array2d from "../utils/Array2d";
  */
 class Day24 {
   constructor(values) {
+    this.player = {x: 1, y: 0};
     this.playBoard = new Array2d({x: 0, y: 0}, values);
+    this.blizzards = this.initBlizzards();
   }
 
-  initPlayground() {
+  initBlizzards() {
+    const blizzards = new Map();
+    const size = this.playBoard.size();
 
+    for (let y = 0; y < size.y; y += 1) {
+      for (let x = 0; x < size.x; x += 1) {
+        const char = this.playBoard.get(x, y);
+        if (char === '<' || char === '>' || char === '^' || char === 'v')
+          blizzards.set(`${x},${y}`, {point: {x, y}, char});
+      }
+    }
+
+    return blizzards;
   }
 
-  static moveLeft(steps, wayPoint, line) {
+  moveLeft(steps, wayPoint, line) {
     const reverseLine = line.reverse();
     wayPoint.column = line.length - 1 - wayPoint.column;
     Day24.moveRight(steps, wayPoint, reverseLine);
@@ -268,45 +282,78 @@ class Day24 {
     return false;
   }
 
-  static moveRight(steps, wayPoint, line) {
-    let char;
-    for (let idx = 1; idx <= steps; idx += 1) {
-      // Überlauf rechts?
-      if (wayPoint.column + 1 === line.length) {
-        // Bestimme den Anfang der Zeile
-        const lineStartPos1 = line.indexOf('.'); // => suche erste . oder #
-        const lineStartPos2 = line.indexOf('#');
-        if (lineStartPos2 < lineStartPos1)
-          break; // # an erster Stelle => Abbruch
+  moveRight(position) {
 
-        // Punkt an erster Stelle.
-        char = line[lineStartPos1];
-        wayPoint.column = lineStartPos1 - 1;
-      } else
-        char = line[wayPoint.column + 1];
-
-      if (char === '#')
-        break;
-      else if (char === '.')
-        wayPoint.column += 1;
-    }
-    return false;
   }
 
-  static movUp(steps, wayPoint, line) {
+  movUp(steps, wayPoint, line) {
     // row--
     Day24.moveLeft(steps, wayPoint, line);
     return false;
   }
 
-  static moveDown(steps, wayPoint, line) {
+  moveDown(steps, wayPoint, line) {
     // row++
     Day24.moveRight(steps, wayPoint, line);
     return false;
   }
 
+  move(position, direction) {
+    const playBoardSize = this.playBoard.size();
+    switch (direction) {
+      case '<':
+        return MovePoint.moveLeft(position, playBoardSize.x - 1); // -1 Mauer am Rand
+      case '>':
+        return MovePoint.moveRight(position, playBoardSize.x - 1);
+      case 'v':
+        return MovePoint.moveDown(position, playBoardSize.y - 1);
+      case '^':
+        return MovePoint.moveUp(position, playBoardSize.y - 1);
+      default:
+        break;
+    }
+    return undefined;
+  }
+
+  calcNewPositionBlizzards() {
+    for (let [key, value] of this.blizzards) {
+      const {point: position, char} = value;
+      const point = this.move(position, char);
+      this.blizzards.set(key, {point, char});
+    }
+  }
+
+  createPlayerBoard() {
+    const size = this.playBoard.size();
+    this.playBoard = new Array2d(size, '.');
+    const rowWall = Array2d.initArray(size.x, '#');
+    const columnWall = Array2d.initArray(size.y, '#');
+    this.playBoard.fillRowLine(0, rowWall);
+    this.playBoard.fillRowLine(size.x - 1, rowWall);
+    this.playBoard.fillColumnLine(0, columnWall);
+    this.playBoard.fillColumnLine(size.y - 1, columnWall);
+    console.log(this.playBoard);
+  }
+
+  movePlayer() {
+    const upChar = this.playBoard.get(this.player.x, this.player.y - 1);
+    const downChar = this.playBoard.get(this.player.x, this.player.y + 1);
+    const leftChar = this.playBoard.get(this.player.x - 1, this.player.y);
+    const rightChar = this.playBoard.get(this.player.x + 1, this.player.y);
+  }
+
   calcPartOne() {
-    const {wayPoint, commands, playBoard} = this.initPlayground();
+    let gameOver = false;
+    while (gameOver === false) {
+      // Blizzards bewegen
+      this.calcNewPositionBlizzards();
+      // Spielbrett neu aufbauen
+      this.createPlayerBoard();
+      // Player bewegen
+      this.movePlayer();
+      // Prüfen auf Game Over
+      gameOver = true; // (this.player.y === playBoardSize.y - 2 && this.player.x === playBoardSize.x - 2);
+    }
     return 0;
   }
 
