@@ -90,6 +90,25 @@ class Array2d {
     return columnLine;
   }
 
+  fillRowLine(row, rowLine) {
+    if (this.inRange(0, row) === false)
+      return;
+    this.array2d[row] = rowLine;
+  }
+
+  fillColumnLine(column, columnLine) {
+    if (this.inRange(column, 0) === false)
+      return;
+    for (let y = 0; y < this.array2d.length; y += 1) {
+      const char = columnLine[y];
+      this.set(column, y, char);
+    }
+  }
+
+  static initArray(size, char) {
+    return new Array(size).fill(char);
+  }
+
   /**
    * Get the line array as string back.
    * @param line line array
