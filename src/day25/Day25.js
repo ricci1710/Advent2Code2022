@@ -90,6 +90,7 @@
  *        10             20
  *        15            1=0
  *        20            1-0
+ *      1747         1=-0-2
  *      2022         1=11-2
  *     12345        1-0---0
  * 314159265  1121-1110-1=0
@@ -136,9 +137,11 @@ class Day25 {
     this.decimal2SNAFU.set(7, '12');
     this.decimal2SNAFU.set(8, '2=');
     this.decimal2SNAFU.set(9, '2-');
-    this.decimal2SNAFU.set(10, '20');
+    this.decimal2SNAFU.set(10, '20')
+    this.decimal2SNAFU.set(13, '1==');
     this.decimal2SNAFU.set(15, '1=0');
     this.decimal2SNAFU.set(20, '1-0');
+    this.decimal2SNAFU.set(1747, '1=-0-2');
     this.decimal2SNAFU.set(2022, '1=11-2');
     this.decimal2SNAFU.set(12345, '1-0---0');
     this.decimal2SNAFU.set(314159265, '1121-1110-1=0');
@@ -190,22 +193,48 @@ class Day25 {
    * So the octal number is 125 (remainders in reverse order).
    *
    * Erlaubter WerteBereich: 2,1,0,-1,-2
+   * 8 => 1 3 = 1*5 + 3*1
    * @param value
    */
   convertDecimal2SNAFU(value) {
-    const result = [];
+    let result = [];
 
     let curValue = value;
     let quotient;
     let remainder;
+    let offset = 0;
+
     do {
       quotient = Math.floor(curValue / 5); // => 4 => the times 3 fits into 13
       remainder = curValue % 5;
       curValue = quotient;
-      result.push(remainder);
+      if (remainder === 3) {
+        this.decimal2SNAFU.get(-2)
+        remainder = result.push(remainder);
+        offset = 1;
+      } else if (remainder === 4) {
+        remainder = this.decimal2SNAFU.get(-1);
+        offset = 1;
+      } else {
+        result.push(offset + remainder);
+        offset = 0;
+      }
     } while (quotient > 0)
+    /*
+    do {
+      quotient = Math.floor(curValue / 5); // => 4 => the times 3 fits into 13
+      remainder = curValue % 5;
+      curValue = quotient;
+      if (quotient <= 2 && remainder === 3)
+        remainder = quotient === 2 ? this.decimal2SNAFU.get(-2) : quotient + 1 + this.decimal2SNAFU.get(-2);
+      else if (quotient <= 2 && remainder === 4)
+        remainder = quotient === 2 ? this.decimal2SNAFU.get(-1) : quotient + 1 + this.decimal2SNAFU.get(-1);
 
+      result.push(remainder);
+    } while ((quotient > 0 && remainder !== '2-' && remainder !== '2='))
+*/
     // 1=-0-2
+    result = result.reverse().toString().replace(',', '');
     console.log(result);
     return result.toString();
   }
