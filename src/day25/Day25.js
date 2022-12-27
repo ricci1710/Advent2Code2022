@@ -10,15 +10,15 @@
  * The Elves, seemingly in an attempt to make the new machine feel welcome, have already attached a pair of googly eyes
  * and started calling it "Bob".
  *
- * To heat the fuel, Bob needs to know the total amount of fuel that will be processed ahead of time so it can correctly
- * calibrate heat output and flow rate. This amount is simply the sum of the fuel requirements of all of the hot air
+ * To heat the fuel, Bob needs to know the total amount of fuel that will be processed ahead of time, so it can correctly
+ * calibrate heat output and flow rate. This amount is simply the sum of the fuel requirements of all the hot air
  * balloons, and those fuel requirements are even listed clearly on the side of each hot air balloon's burner.
  *
  * You assume the Elves will have no trouble adding up some numbers and are about to go back to figuring out which
  * balloon is yours when you get a tap on the shoulder. Apparently, the fuel requirements use numbers written in a
  * format the Elves don't recognize; predictably, they'd like your help deciphering them.
  *
- * You make a list of all of the fuel requirements (your puzzle input), but you don't recognize the number format
+ * You make a list of all the fuel requirements (your puzzle input), but you don't recognize the number format
  * either.
  *
  * For example:
@@ -44,13 +44,13 @@
  * You mention that it's quite cold up here and ask if they can skip ahead.
  *
  * "Okay, our Special Numeral-Analogue Fuel Units - SNAFU for short - are sort of like normal numbers. You know how
- * starting on the right, normal numbers have a ones place, a tens place, a hundreds place, and so on, where the digit
+ * starting on the right, normal numbers have an ones place, a tens place, a hundred place, and so on, where the digit
  * in each place tells you how many of that value you have?"
  *
  * "SNAFU works the same way, except it uses powers of five instead of ten. Starting from the right, you have a ones
  * place, a fives place, a twenty-fives place, a one-hundred-and-twenty-fives place, and so on. It's that easy!"
  *
- * You ask why some of the digits look like - or = instead of "digits".
+ * You ask why some digits look like - or = instead of "digits".
  *
  * "You know, I never did ask the engineers why they did that. Instead of using digits four through zero, the
  * digits are 2, 1, 0, minus (written -), and double-minus (written =). Minus is worth -1, and double-minus
@@ -120,6 +120,21 @@
  * Bob's console is 2=-1=0.
  *
  * The Elves are starting to get cold. What SNAFU number do you supply to Bob's console?
+ *
+ * --- Part Two ---
+ * The hot air balloons quickly carry you to the North Pole. As soon as you land, most of the expedition is escorted
+ * directly to a small building attached to the reindeer stables.
+ *
+ * The head smoothie chef has just finished warming up the industrial-grade smoothie blender as you arrive. It will
+ * take 50 stars to fill the blender. The expedition Elves turn their attention to you, and you begin emptying the
+ * fruit from your pack onto the table.
+ *
+ * As you do, a very young Elf - one you recognize from the expedition team - approaches the table and holds up a
+ * single star fruit he found. The head smoothie chef places it in the blender.
+ *
+ * Only 49 stars to go.
+ *
+ * You don't have enough stars to fill the blender, though. You need 26 more.
  */
 class Day25 {
   constructor(values) {
